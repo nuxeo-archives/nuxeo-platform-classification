@@ -31,7 +31,7 @@ import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
 import org.nuxeo.ecm.core.api.security.SecurityConstants;
 
 /**
- * Classification helper
+ * Classification helper.
  *
  * @author Anahide Tchertchian
  */
@@ -41,7 +41,6 @@ public class ClassificationHelper {
      * Returns resolved classified documents using given session.
      * <p>
      * Classified documents are kept on a specific property in the container.
-     * </p>
      *
      * @throws ClientException
      */

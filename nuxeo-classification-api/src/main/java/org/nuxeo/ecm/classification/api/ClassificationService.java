@@ -20,11 +20,11 @@
 package org.nuxeo.ecm.classification.api;
 
 import java.util.List;
+
 /**
  * Classification service is used to register classifiable Document Types.
  *
  * @author ldoguin
- *
  */
 public interface ClassificationService {
 

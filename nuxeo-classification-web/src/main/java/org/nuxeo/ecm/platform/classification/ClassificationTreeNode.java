@@ -39,7 +39,6 @@ import org.nuxeo.ecm.webapp.tree.DocumentTreeNodeImpl;
  * Tree node taking care of classified documents within a document
  *
  * @author Anahide Tchertchian
- *
  */
 public class ClassificationTreeNode extends DocumentTreeNodeImpl {
 
@@ -84,7 +83,6 @@ public class ClassificationTreeNode extends DocumentTreeNodeImpl {
         } catch (ClientException e) {
             log.error(e);
         }
-
     }
 
 }

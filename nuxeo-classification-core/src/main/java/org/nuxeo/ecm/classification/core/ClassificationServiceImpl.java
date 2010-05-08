@@ -65,7 +65,6 @@ public class ClassificationServiceImpl extends DefaultComponent implements
         } else {
             log.error("Extension point " + extensionPoint + "is unknown");
         }
-
     }
 
     public List<String> getClassifiableDocumentTypes() {
@@ -73,11 +72,7 @@ public class ClassificationServiceImpl extends DefaultComponent implements
     }
 
     public boolean isClassifiable(String docType) {
-        if (typeList.contains(docType)) {
-            return true;
-        } else {
-            return false;
-        }
+        return typeList.contains(docType);
     }
 
 }

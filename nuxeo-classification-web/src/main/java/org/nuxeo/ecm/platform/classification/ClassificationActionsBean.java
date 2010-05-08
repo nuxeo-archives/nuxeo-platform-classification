@@ -249,8 +249,8 @@ public class ClassificationActionsBean implements ClassificationActions {
         // avoid duplicates
         ClassificationService clService;
         try {
-        clService = Framework.getService(ClassificationService.class);
-        } catch (Exception e){
+            clService = Framework.getService(ClassificationService.class);
+        } catch (Exception e) {
             throw new ClientException("Could not find Classification Service", e);
         }
         for (DocumentModel targetDoc : targetDocs) {
@@ -325,7 +325,6 @@ public class ClassificationActionsBean implements ClassificationActions {
 
     /**
      * Sets current classification root id, and set it as current document.
-     *
      */
     public void setCurrentClassificationRootId(String newRootId)
             throws ClientException {
@@ -716,9 +715,8 @@ public class ClassificationActionsBean implements ClassificationActions {
         ctx.setProperties(options);
         Event event = ctx.newEvent(eventId);
 
-        EventProducer evtProducer;
         try {
-            evtProducer = Framework.getService(EventProducer.class);
+            EventProducer evtProducer = Framework.getService(EventProducer.class);
             log.debug("Notify RepositoryEventListener listeners list for event="
                     + eventId);
             evtProducer.fireEvent(event);
@@ -816,7 +814,6 @@ public class ClassificationActionsBean implements ClassificationActions {
                             "feedback.unclassification.requestDone"));
         }
         return false;
-
     }
 
     // XXX AT: copy/pasted

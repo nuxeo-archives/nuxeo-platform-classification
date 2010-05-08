@@ -33,7 +33,7 @@ import org.nuxeo.ecm.core.api.SortInfo;
 import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
 
 /**
- * Pages provider for a document classification
+ * Paged provider for a document classification.
  *
  * @author Anahide Tchertchian
  */
@@ -54,7 +54,6 @@ public class PagedClassificationsProvider implements
 
     public PagedClassificationsProvider(List<DocumentModel> documents,
             int pageSize, String name, SortInfo sortInfo) {
-        super();
         this.pageSize = pageSize;
         this.name = name;
         this.sortInfo = sortInfo;
