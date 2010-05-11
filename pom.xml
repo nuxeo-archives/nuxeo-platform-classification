@@ -17,12 +17,12 @@
   <version>5.3.2-SNAPSHOT</version>
   <name>Nuxeo classification components</name>
   <packaging>pom</packaging>
-  <description></description>
+  <description>A component to fill Document in folder.</description>
 
   <scm>
-    <connection>scm:hg:https://hgpriv.nuxeo.org/nuxeo-classification</connection>
-    <developerConnection>scm:hg:https://hgpriv.nuxeo.org/nuxeo-classification</developerConnection>
-    <url>https://hgpriv.nuxeo.org/nuxeo-classification</url>
+    <connection>scm:hg:http://hg.nuxeo.org/addons/nuxeo-platform-classification</connection>
+    <developerConnection>scm:hg:https://hg.nuxeo.org/addons/nuxeo-platform-classification</developerConnection>
+    <url>http://hg.nuxeo.org/addons/nuxeo-platform-classification</url>
   </scm>
 
   <developers>
@@ -31,11 +31,6 @@
       <email>at@nuxeo.com</email>
     </developer>
   </developers>
-
-
-  <properties>
-    <pom.version>5.3.2-SNAPSHOT</pom.version>
-  </properties>
 
   <modules>
     <module>nuxeo-classification-api</module>
