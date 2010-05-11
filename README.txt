@@ -4,7 +4,11 @@ NUXEO CLASSIFICATION README
 
 Nuxeo Classification is an addon for Nuxeo EP.
 It provides two new Document Types, ClassificationRoot and
-ClassificationFolder, wich let you classify documents in it.
+ClassificationFolder, which let you classify documents in it.
+
+You can create arborescence of folder in which to fill documents.
+When a document is filled, a symlink to this document is created
+in the classification folder (we do not copy/snapshot the document)
 
 Install
 =======
