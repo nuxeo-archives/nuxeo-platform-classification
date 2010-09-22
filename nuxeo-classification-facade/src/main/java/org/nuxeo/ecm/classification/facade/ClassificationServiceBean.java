@@ -30,10 +30,9 @@ import org.nuxeo.ecm.classification.api.ClassificationService;
 import org.nuxeo.runtime.api.Framework;
 
 @Stateless
-@Local(ClassificationService.class)
+@Local(ClassificationServiceLocal.class)
 @Remote(ClassificationService.class)
-public class ClassificationServiceBean implements
-        ClassificationService {
+public class ClassificationServiceBean implements ClassificationServiceLocal {
 
     private ClassificationService service;
 
