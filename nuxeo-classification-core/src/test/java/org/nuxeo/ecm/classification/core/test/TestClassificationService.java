@@ -20,10 +20,14 @@
 package org.nuxeo.ecm.classification.core.test;
 
 import org.nuxeo.ecm.classification.api.ClassificationService;
+import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.storage.sql.SQLRepositoryTestCase;
 import org.nuxeo.runtime.api.Framework;
-import org.nuxeo.runtime.test.NXRuntimeTestCase;
 
-public class TestClassificationService extends NXRuntimeTestCase {
+public class TestClassificationService extends SQLRepositoryTestCase {
+
+    protected ClassificationService cs;
 
     @Override
     public void setUp() throws Exception {
@@ -33,15 +37,11 @@ public class TestClassificationService extends NXRuntimeTestCase {
                 "OSGI-INF/classification-classifiable-types-framework.xml");
         deployContrib("org.nuxeo.ecm.platform.classification.test.core",
                 "OSGI-INF/classification-classifiable-types-test-contrib.xml");
-    }
-
-    public void testLookup() throws Exception {
-        ClassificationService cs = Framework.getLocalService(ClassificationService.class);
+        cs = Framework.getLocalService(ClassificationService.class);
         assertNotNull(cs);
     }
 
     public void testRegistration() {
-        ClassificationService cs = Framework.getLocalService(ClassificationService.class);
         assertNotNull(cs);
         assertNotNull(cs.getClassifiableDocumentTypes());
         assertTrue(cs.isClassifiable("File"));
@@ -51,11 +51,21 @@ public class TestClassificationService extends NXRuntimeTestCase {
     }
 
     public void testOverriding() throws Exception {
-        ClassificationService cs = Framework.getLocalService(ClassificationService.class);
         assertNotNull(cs);
         deployContrib("org.nuxeo.ecm.platform.classification.test.core",
                 "OSGI-INF/classification-classifiable-types-test-override-contrib.xml");
         assertFalse(cs.isClassifiable("File"));
         assertEquals(2, cs.getClassifiableDocumentTypes().size());
+    }
+
+    public void testClassifiable() throws ClientException {
+        openSession();
+        DocumentModel folder = session.createDocumentModel("/", "foo", "Folder");
+        folder = session.createDocument(folder);
+        assertFalse(cs.isClassifiable(folder));
+        DocumentModel classifiableDoc = session.createDocumentModel("/", "bar", "ClassifiableDoc");
+        classifiableDoc = session.createDocument(folder);
+        assertFalse(cs.isClassifiable(classifiableDoc));
+
     }
 }

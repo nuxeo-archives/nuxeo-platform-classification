@@ -21,10 +21,15 @@ package org.nuxeo.ecm.classification.core;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.nuxeo.ecm.classification.api.ClassificationConstants;
 import org.nuxeo.ecm.classification.api.ClassificationService;
+import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.schema.SchemaManager;
+import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.model.ComponentContext;
 import org.nuxeo.runtime.model.ComponentInstance;
 import org.nuxeo.runtime.model.DefaultComponent;
@@ -72,7 +77,21 @@ public class ClassificationServiceImpl extends DefaultComponent implements
     }
 
     public boolean isClassifiable(String docType) {
-        return typeList.contains(docType);
+        if(typeList.contains(docType)) {
+            return true;
+        }
+        try {
+            SchemaManager schemaManager = Framework.getService(SchemaManager.class);
+            Set<String> facets = schemaManager.getDocumentType(docType).getFacets();
+            return facets.contains(ClassificationConstants.CLASSIFIABLE_FACET);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean isClassifiable(DocumentModel doc) {
+        return doc.hasFacet(ClassificationConstants.CLASSIFIABLE_FACET)
+                || typeList.contains(doc.getType());
     }
 
 }

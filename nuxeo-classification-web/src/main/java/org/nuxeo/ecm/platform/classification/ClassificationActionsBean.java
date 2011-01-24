@@ -148,7 +148,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         if (docs != null) {
             for (DocumentModel doc : docs) {
                 if (doc != null
-                        && clService.isClassifiable(doc.getType())) {
+                        && clService.isClassifiable(doc)) {
                     filtered.add(doc);
                 }
             }
@@ -257,7 +257,7 @@ public class ClassificationActionsBean implements ClassificationActions {
             if (targetDoc == null) {
                 continue;
             }
-            if (!clService.isClassifiable(targetDoc.getType())) {
+            if (!clService.isClassifiable(targetDoc)) {
                 invalid = true;
                 continue;
             }
@@ -763,6 +763,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         }
 
         // edit classification folder adding given document ids
+        @SuppressWarnings("unchecked")
         ArrayList<String> targets = (ArrayList<String>) classificationFolder.getPropertyValue(ClassificationConstants.CLASSIFICATION_TARGETS_PROPERTY_NAME);
         if (targets == null) {
             targets = new ArrayList<String>();

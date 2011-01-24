@@ -27,6 +27,7 @@ import javax.ejb.Remote;
 import javax.ejb.Stateless;
 
 import org.nuxeo.ecm.classification.api.ClassificationService;
+import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.runtime.api.Framework;
 
 @Stateless
@@ -51,6 +52,10 @@ public class ClassificationServiceBean implements ClassificationServiceLocal {
 
     public boolean isClassifiable(String docType) {
         return service.isClassifiable(docType);
+    }
+
+    public boolean isClassifiable(DocumentModel doc) {
+        return service.isClassifiable(doc);
     }
 
 }

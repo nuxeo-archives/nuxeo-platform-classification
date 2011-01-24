@@ -21,6 +21,8 @@ package org.nuxeo.ecm.classification.api;
 
 import java.util.List;
 
+import org.nuxeo.ecm.core.api.DocumentModel;
+
 /**
  * Classification service is used to register classifiable Document Types.
  *
@@ -29,14 +31,32 @@ import java.util.List;
 public interface ClassificationService {
 
     /**
-     * @return the list of registered Document Types as String.
+     * This will return only the document types that was contributed as
+     * classifiable. It is recommanded to use the facet Classifiable instead of
+     * the contribution.
+     *
+     * @return the list of registered Document Types as String
      */
+    @Deprecated
     List<String> getClassifiableDocumentTypes();
 
     /**
+     * If this type of document is classifiable. It is recommanded to use
+     * {@link #isClassifiable(DocumentModel)} and to add the facet Classifiable
+     * to the classifiable document instead of use the contribution.
+     *
      * @param docType
      * @return true if the given doc type is registered.
      */
+    @Deprecated
     boolean isClassifiable(String docType);
+
+    /**
+     * If this document is classifiable
+     *
+     * @param doc
+     * @return
+     */
+    boolean isClassifiable(DocumentModel doc);
 
 }

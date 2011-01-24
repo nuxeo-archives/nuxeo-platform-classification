@@ -86,7 +86,6 @@ public interface ClassificationActions extends ResultsProviderFarm,
      *
      * @return true on error
      */
-    @SuppressWarnings("unchecked")
     boolean classify(Collection<DocumentModel> targetDocs,
             DocumentModel classificationFolder) throws ClientException;
 

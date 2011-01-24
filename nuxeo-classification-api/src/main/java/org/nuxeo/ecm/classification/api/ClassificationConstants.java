@@ -31,6 +31,8 @@ public class ClassificationConstants {
      */
     public static final String CLASSIFY = "Classify";
 
+    public static final String CLASSIFIABLE_FACET = "Classifiable";
+
     public static final String CLASSIFICATION_SCHEMA_NAME = "classification";
 
     public static final String CLASSIFICATION_TARGETS_PROPERTY_NAME = "classification:targets";
