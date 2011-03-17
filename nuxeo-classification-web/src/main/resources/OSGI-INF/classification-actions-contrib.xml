@@ -63,7 +63,7 @@
       <filter-id>canClassifyFromCurrentSelection</filter-id>
     </action>
 
-   <!-- remove generic actions for classification folder documents -->
+    <!-- remove generic actions for classification folder documents -->
     <action id="newDocument">
       <filter-id>is_not_classification_container</filter-id>
     </action>

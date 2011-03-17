@@ -6,8 +6,8 @@
 
   <extension target="org.nuxeo.ecm.core.schema.TypeService" point="schema">
 
-    <schema name="classification"
-      src="schemas/classification.xsd" prefix="classification" />
+    <schema name="classification" src="schemas/classification.xsd"
+      prefix="classification" />
 
   </extension>
 

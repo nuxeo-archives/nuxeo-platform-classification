@@ -5,7 +5,7 @@
 
   <extension target="org.nuxeo.ecm.platform.types.TypeService" point="types">
 
-    <type id="ClassificationRoot" coretype="ClassificationRoot">
+    <type id="ClassificationRoot">
       <label>ClassificationRoot</label>
       <icon>/icons/plan_classement_root.gif</icon>
       <default-view>view_documents</default-view>
@@ -17,7 +17,7 @@
       </layouts>
     </type>
 
-    <type id="ClassificationFolder" coretype="ClassificationFolder">
+    <type id="ClassificationFolder">
       <label>ClassificationFolder</label>
       <icon>/icons/plan_classement_branch.gif</icon>
       <default-view>view_documents</default-view>

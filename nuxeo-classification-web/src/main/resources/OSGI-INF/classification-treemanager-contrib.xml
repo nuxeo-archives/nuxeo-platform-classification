@@ -18,7 +18,9 @@
       <includedFacets>
         <facet name="Folderish" />
       </includedFacets>
-      <leafFilterClass>org.nuxeo.ecm.webapp.tree.BigFolderLeafFilter</leafFilterClass>
+      <leafFilterClass>
+        org.nuxeo.ecm.webapp.tree.BigFolderLeafFilter
+      </leafFilterClass>
       <sortPropertyPath>dc:title</sortPropertyPath>
       <queryModel>CLASSIFICATION_ROOTS</queryModel>
     </treeManagerPlugin>

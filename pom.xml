@@ -3,7 +3,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -20,8 +19,12 @@
   <description>A component to fill Document in folder.</description>
 
   <scm>
-    <connection>scm:hg:http://hg.nuxeo.org/addons/nuxeo-platform-classification</connection>
-    <developerConnection>scm:hg:https://hg.nuxeo.org/addons/nuxeo-platform-classification</developerConnection>
+    <connection>
+      scm:hg:http://hg.nuxeo.org/addons/nuxeo-platform-classification
+    </connection>
+    <developerConnection>
+      scm:hg:https://hg.nuxeo.org/addons/nuxeo-platform-classification
+    </developerConnection>
     <url>http://hg.nuxeo.org/addons/nuxeo-platform-classification</url>
   </scm>
 
@@ -47,9 +50,9 @@
         <version>${pom.version}</version>
       </dependency>
       <dependency>
-	<groupId>org.nuxeo.ecm.core</groupId>
-	<artifactId>nuxeo-core-storage-sql-test</artifactId>
-	<version>${pom.version}</version>
+        <groupId>org.nuxeo.ecm.core</groupId>
+        <artifactId>nuxeo-core-storage-sql-test</artifactId>
+        <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.nuxeo.ecm.platform</groupId>
@@ -74,7 +77,7 @@
     </dependencies>
   </dependencyManagement>
 
-    <repositories>
+  <repositories>
     <repository>
       <id>public</id>
       <url>http://maven.nuxeo.org/public</url>
