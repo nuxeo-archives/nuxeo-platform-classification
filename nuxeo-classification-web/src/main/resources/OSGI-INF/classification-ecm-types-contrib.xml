@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component name="org.nuxeo.ecm.classification.web.types">
 
-  <require>org.nuxeo.ecm.platform.types.TypeService</require>
-
   <extension target="org.nuxeo.ecm.platform.types.TypeService" point="types">
 
     <type id="ClassificationRoot">
