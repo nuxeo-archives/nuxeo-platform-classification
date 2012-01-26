@@ -5,12 +5,12 @@
   <parent>
     <groupId>org.nuxeo.ecm.platform</groupId>
     <artifactId>nuxeo-features-parent</artifactId>
-    <version>5.4.2.1-SNAPSHOT</version>
+    <version>5.4.2-HF16</version>
   </parent>
 
   <groupId>org.nuxeo.ecm.platform</groupId>
   <artifactId>nuxeo-classification-parent</artifactId>
-  <version>5.4.2.1-SNAPSHOT</version>
+  <version>5.4.2-HF16</version>
   <name>Nuxeo classification components</name>
   <packaging>pom</packaging>
   <description>A component to fill Document in folder.</description>
