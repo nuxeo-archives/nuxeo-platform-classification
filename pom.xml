@@ -16,9 +16,9 @@
   <description>A component to fill Document in folder.</description>
 
   <scm>
-    <connection>scm:hg:http://hg.nuxeo.org/addons/nuxeo-platform-classification</connection>
-    <developerConnection>scm:hg:https://hg.nuxeo.org/addons/nuxeo-platform-classification</developerConnection>
-    <url>http://hg.nuxeo.org/addons/nuxeo-platform-classification</url>
+    <connection>scm:git:git://github.com/nuxeo/nuxeo-platform-classification.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com:nuxeo/nuxeo-platform-classification.git</developerConnection>
+    <url>https://github.com/nuxeo/nuxeo-platform-classification</url>
   </scm>
 
   <developers>
