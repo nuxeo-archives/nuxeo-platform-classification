@@ -19,6 +19,10 @@
 
 package org.nuxeo.ecm.classification.core.test;
 
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
 import org.nuxeo.ecm.classification.api.ClassificationService;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -29,7 +33,7 @@ public class TestClassificationService extends SQLRepositoryTestCase {
 
     protected ClassificationService cs;
 
-    @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         deployBundle("org.nuxeo.ecm.platform.classification.api");
@@ -41,6 +45,7 @@ public class TestClassificationService extends SQLRepositoryTestCase {
         assertNotNull(cs);
     }
 
+    @Test
     public void testRegistration() {
         assertNotNull(cs);
         assertNotNull(cs.getClassifiableDocumentTypes());
@@ -50,6 +55,7 @@ public class TestClassificationService extends SQLRepositoryTestCase {
         assertEquals(3, cs.getClassifiableDocumentTypes().size());
     }
 
+    @Test
     public void testOverriding() throws Exception {
         assertNotNull(cs);
         deployContrib("org.nuxeo.ecm.platform.classification.test.core",
@@ -58,6 +64,7 @@ public class TestClassificationService extends SQLRepositoryTestCase {
         assertEquals(2, cs.getClassifiableDocumentTypes().size());
     }
 
+    @Test
     public void testClassifiable() throws ClientException {
         openSession();
         DocumentModel folder = session.createDocumentModel("/", "foo", "Folder");
