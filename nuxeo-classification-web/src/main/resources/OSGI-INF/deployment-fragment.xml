@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<fragment>
+<fragment version="1">
 
   <extension target="application#MODULE">
 
@@ -26,9 +26,8 @@
 
   <install>
 
-    <unzip from="${bundle.fileName}" to="/">
-      <include>nuxeo.war/**</include>
-      <include>OSGI-INF/**</include>
+    <unzip from="${bundle.fileName}" to="/" prefix="web">
+      <include>web/nuxeo.war/**</include>
     </unzip>
 
     <delete path="${bundle.fileName}.tmp" />
