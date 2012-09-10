@@ -41,6 +41,7 @@ public class TestClassificationService extends SQLRepositoryTestCase {
                 "OSGI-INF/classification-classifiable-types-framework.xml");
         deployContrib("org.nuxeo.ecm.platform.classification.test.core",
                 "OSGI-INF/classification-classifiable-types-test-contrib.xml");
+        fireFrameworkStarted();
         cs = Framework.getLocalService(ClassificationService.class);
         assertNotNull(cs);
     }
