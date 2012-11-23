@@ -20,6 +20,9 @@
 package org.nuxeo.ecm.platform.classification;
 
 import static org.jboss.seam.ScopeType.EVENT;
+import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
+import static org.jboss.seam.international.StatusMessage.Severity.INFO;
+import static org.jboss.seam.international.StatusMessage.Severity.WARN;
 import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.NOT_CLASSIFIED;
 
 import java.io.Serializable;
@@ -100,7 +103,7 @@ public class ClassificationActionsBean implements ClassificationActions {
     protected transient Context eventContext;
 
     @In(create = true)
-    protected transient ResourcesAccessor resourcesAccessor;
+    protected Map<String, String> messages;
 
     @In(create = true)
     private transient NavigationContext navigationContext;
@@ -210,33 +213,28 @@ public class ClassificationActionsBean implements ClassificationActions {
             DocumentModel classificationFolder) throws ClientException {
         if (targetDocs.isEmpty()) {
             facesMessages.add(
-                    StatusMessage.Severity.ERROR,
-                    resourcesAccessor.getMessages().get(
-                            "feedback.classification.noDocumentsToClassify"));
+                    ERROR,
+                    messages.get("feedback.classification.noDocumentsToClassify"));
             return true;
         }
         if (classificationFolder == null) {
             facesMessages.add(
-                    StatusMessage.Severity.ERROR,
-                    resourcesAccessor.getMessages().get(
-                            "feedback.classification.noClassificationFolder"));
+                    ERROR,
+                    messages.get("feedback.classification.noClassificationFolder"));
             return true;
         }
         if (!classificationFolder.hasSchema(ClassificationConstants.CLASSIFICATION_SCHEMA_NAME)) {
             facesMessages.add(
-                    StatusMessage.Severity.ERROR,
-                    resourcesAccessor.getMessages().get(
-                            "feedback.classification.invalidClassificationFolder"));
+                    ERROR,
+                    messages.get("feedback.classification.invalidClassificationFolder"));
             return true;
         }
 
         DocumentRef classificationRef = classificationFolder.getRef();
         if (!documentManager.hasPermission(classificationRef,
                 ClassificationConstants.CLASSIFY)) {
-            facesMessages.add(
-                    StatusMessage.Severity.ERROR,
-                    resourcesAccessor.getMessages().get(
-                            "feedback.classification.unauthorized"));
+            facesMessages.add(ERROR,
+                    messages.get("feedback.classification.unauthorized"));
             return true;
         }
 
@@ -252,24 +250,19 @@ public class ClassificationActionsBean implements ClassificationActions {
 
         if (invalid && alreadyClassified) {
             facesMessages.add(
-                    StatusMessage.Severity.WARN,
-                    resourcesAccessor.getMessages().get(
-                            "feedback.classification.requestDoneButSomeWereAlreadyClassifiedAndSomeInvalid"));
+                    WARN,
+                    messages.get("feedback.classification.requestDoneButSomeWereAlreadyClassifiedAndSomeInvalid"));
         } else if (invalid) {
             facesMessages.add(
-                    StatusMessage.Severity.WARN,
-                    resourcesAccessor.getMessages().get(
-                            "feedback.classification.requestDoneButSomeInvalid"));
+                    WARN,
+                    messages.get("feedback.classification.requestDoneButSomeInvalid"));
         } else if (alreadyClassified) {
             facesMessages.add(
-                    StatusMessage.Severity.WARN,
-                    resourcesAccessor.getMessages().get(
-                            "feedback.classification.requestDoneButSomeWereAlreadyClassified"));
+                    WARN,
+                    messages.get("feedback.classification.requestDoneButSomeWereAlreadyClassified"));
         } else {
-            facesMessages.add(
-                    StatusMessage.Severity.INFO,
-                    resourcesAccessor.getMessages().get(
-                            "feedback.classification.requestDone"));
+            facesMessages.add(INFO,
+                    messages.get("feedback.classification.requestDone"));
         }
         return false;
     }
@@ -698,32 +691,27 @@ public class ClassificationActionsBean implements ClassificationActions {
             DocumentModel classificationFolder) throws ClientException {
         if (targetDocIds.isEmpty()) {
             facesMessages.add(
-                    StatusMessage.Severity.ERROR,
-                    resourcesAccessor.getMessages().get(
-                            "feedback.unclassification.noDocumentsToUnclassify"));
+                    ERROR,
+                    messages.get("feedback.unclassification.noDocumentsToUnclassify"));
             return true;
         }
         if (classificationFolder == null) {
             facesMessages.add(
-                    StatusMessage.Severity.ERROR,
-                    resourcesAccessor.getMessages().get(
-                            "feedback.classification.noClassificationFolder"));
+                    ERROR,
+                    messages.get("feedback.classification.noClassificationFolder"));
             return true;
         }
         if (!classificationFolder.hasSchema(ClassificationConstants.CLASSIFICATION_SCHEMA_NAME)) {
             facesMessages.add(
-                    StatusMessage.Severity.ERROR,
-                    resourcesAccessor.getMessages().get(
-                            "feedback.classification.invalidClassificationFolder"));
+                    ERROR,
+                    messages.get("feedback.classification.invalidClassificationFolder"));
             return true;
         }
         DocumentRef classificationRef = classificationFolder.getRef();
         if (!documentManager.hasPermission(classificationRef,
                 ClassificationConstants.CLASSIFY)) {
-            facesMessages.add(
-                    StatusMessage.Severity.ERROR,
-                    resourcesAccessor.getMessages().get(
-                            "feedback.unclassification.unauthorized"));
+            facesMessages.add(ERROR,
+                    messages.get("feedback.unclassification.unauthorized"));
             return true;
         }
 
@@ -735,14 +723,11 @@ public class ClassificationActionsBean implements ClassificationActions {
 
         if (listMap.containsKey(NOT_CLASSIFIED)) {
             facesMessages.add(
-                    StatusMessage.Severity.WARN,
-                    resourcesAccessor.getMessages().get(
-                            "feedback.unclassification.requestDoneButSomeWereNotClassified"));
+                    WARN,
+                    messages.get("feedback.unclassification.requestDoneButSomeWereNotClassified"));
         } else {
-            facesMessages.add(
-                    StatusMessage.Severity.INFO,
-                    resourcesAccessor.getMessages().get(
-                            "feedback.unclassification.requestDone"));
+            facesMessages.add(INFO,
+                    messages.get("feedback.unclassification.requestDone"));
         }
         return false;
     }
