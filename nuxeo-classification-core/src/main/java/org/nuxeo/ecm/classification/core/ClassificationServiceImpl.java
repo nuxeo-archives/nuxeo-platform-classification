@@ -27,6 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.classification.api.ClassificationConstants;
 import org.nuxeo.ecm.classification.api.ClassificationService;
+import org.nuxeo.ecm.classification.core.adapter.Classification;
 import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.api.event.CoreEventConstants;
 import org.nuxeo.ecm.core.api.event.DocumentEventCategories;
@@ -34,6 +35,7 @@ import org.nuxeo.ecm.core.api.impl.UserPrincipal;
 import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventProducer;
 import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
+import org.nuxeo.ecm.core.schema.DocumentType;
 import org.nuxeo.ecm.core.schema.SchemaManager;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.model.ComponentContext;
@@ -45,6 +47,7 @@ import static org.nuxeo.ecm.classification.api.ClassificationConstants.CLASSIFY;
 import static org.nuxeo.ecm.classification.api.ClassificationConstants.EVENT_CLASSIFICATION_DONE;
 import static org.nuxeo.ecm.classification.api.ClassificationService.CLASSIFY_STATE.*;
 import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.NOT_CLASSIFIED;
+import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.UNCLASSIFIED;
 
 public class ClassificationServiceImpl extends DefaultComponent implements
         ClassificationService {
@@ -92,28 +95,21 @@ public class ClassificationServiceImpl extends DefaultComponent implements
         if (typeList.contains(docType)) {
             return true;
         }
-        try {
-            SchemaManager schemaManager = Framework.getService(SchemaManager.class);
-            Set<String> facets = schemaManager.getDocumentType(docType).getFacets();
-            return facets.contains(ClassificationConstants.CLASSIFIABLE_FACET);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+
+        SchemaManager schemaManager = Framework.getLocalService(SchemaManager.class);
+        DocumentType documentType = schemaManager.getDocumentType(docType);
+        if (documentType == null) {
+            log.warn("Trying to access an unregistered DocType: " + docType);
+            return false;
         }
+
+        Set<String> facets = documentType.getFacets();
+        return facets.contains(ClassificationConstants.CLASSIFIABLE_FACET);
     }
 
     public boolean isClassifiable(DocumentModel doc) {
         return doc.hasFacet(ClassificationConstants.CLASSIFIABLE_FACET)
                 || typeList.contains(doc.getType());
-    }
-
-    // XXX Adaptor?
-    protected List<String> getAlreadyClassifedDocuments(
-            DocumentModel classificationFolder) throws ClientException {
-        ArrayList<String> documents = (ArrayList<String>) classificationFolder.getPropertyValue(CLASSIFICATION_TARGETS_PROPERTY_NAME);
-        if (documents == null) {
-            documents = new ArrayList<String>();
-        }
-        return documents;
     }
 
     @Override
@@ -135,7 +131,7 @@ public class ClassificationServiceImpl extends DefaultComponent implements
         String targetNotificationComment = String.format("%s:%s",
                 session.getRepositoryName(), classificationFolder.getId());
 
-        List<String> alreadyClassifedDocuments = getAlreadyClassifedDocuments(classificationFolder);
+        Classification classification = classificationFolder.getAdapter(Classification.class);
         for (DocumentModel targetDoc : targetDocs) {
             if (!isClassifiable(targetDoc)) {
                 addDocumentToClassifiedList(returnsMap, INVALID,
@@ -143,7 +139,7 @@ public class ClassificationServiceImpl extends DefaultComponent implements
                 continue;
             }
 
-            if (alreadyClassifedDocuments.contains(targetDoc.getId())) {
+            if (classification.contains(targetDoc.getId())) {
                 addDocumentToClassifiedList(returnsMap, ALREADY_CLASSIFIED,
                         targetDoc.getId());
                 continue;
@@ -151,7 +147,7 @@ public class ClassificationServiceImpl extends DefaultComponent implements
 
             addDocumentToClassifiedList(returnsMap, CLASSIFIED,
                     targetDoc.getId());
-            alreadyClassifedDocuments.add(targetDoc.getId());
+            classification.add(targetDoc.getId());
 
             // notify on classification folder
             String comment = String.format("%s:%s",
@@ -163,10 +159,7 @@ public class ClassificationServiceImpl extends DefaultComponent implements
                     targetNotificationComment, null, null);
         }
 
-        classificationFolder.setPropertyValue(
-                CLASSIFICATION_TARGETS_PROPERTY_NAME,
-                (Serializable) alreadyClassifedDocuments);
-        session.saveDocument(classificationFolder);
+        session.saveDocument(classification.getDocument());
 
         return returnsMap;
     }
@@ -187,10 +180,11 @@ public class ClassificationServiceImpl extends DefaultComponent implements
                     "Not enough rights to classify doc");
         }
 
-        List<String> classifiedDocuments = getAlreadyClassifedDocuments(classificationFolder);
+        Classification classification = classificationFolder.getAdapter(Classification.class);
         for (String docId : targetDocs) {
-            if (classifiedDocuments.contains(docId)) {
-                classifiedDocuments.remove(docId);
+            if (classification.contains(docId)) {
+                classification.remove(docId);
+                addDocumentToClassifiedList(returnsMap, UNCLASSIFIED, docId);
 
                 String comment = String.format("%s:%s",
                         session.getRepositoryName(), docId);
@@ -214,10 +208,7 @@ public class ClassificationServiceImpl extends DefaultComponent implements
             }
         }
 
-        classificationFolder.setPropertyValue(
-                CLASSIFICATION_TARGETS_PROPERTY_NAME,
-                (Serializable) classifiedDocuments);
-        session.saveDocument(classificationFolder);
+        session.saveDocument(classification.getDocument());
 
         return returnsMap;
     }
@@ -226,7 +217,8 @@ public class ClassificationServiceImpl extends DefaultComponent implements
             String docId) {
         List<String> docList = (List<String>) list.get(state);
         if (docList == null) {
-            docList = (List<String>) list.put(state, new ArrayList<String>());
+            docList = new ArrayList<String>();
+            list.put(state, docList);
         }
         docList.add(docId);
     }
