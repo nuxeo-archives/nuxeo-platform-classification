@@ -20,6 +20,7 @@
 package org.nuxeo.ecm.platform.classification;
 
 import static org.jboss.seam.ScopeType.EVENT;
+import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.NOT_CLASSIFIED;
 
 import java.io.Serializable;
 import java.security.Principal;
@@ -81,7 +82,7 @@ import org.nuxeo.runtime.api.Framework;
 
 /**
  * Handles classification actions
- *
+ * 
  * @author Anahide Tchertchian
  */
 @Name("classificationActions")
@@ -139,16 +140,16 @@ public class ClassificationActionsBean implements ClassificationActions {
             throws ClientException {
         ClassificationService clService;
         try {
-          clService = Framework.getService(ClassificationService.class);
-        } catch (Exception e){
-            throw new ClientException("Could not find Classification Service", e);
+            clService = Framework.getService(ClassificationService.class);
+        } catch (Exception e) {
+            throw new ClientException("Could not find Classification Service",
+                    e);
         }
         List<DocumentModel> filtered = new DocumentModelListImpl();
         List<DocumentModel> docs = documentsListsManager.getWorkingList(DocumentsListsManager.CURRENT_DOCUMENT_SELECTION);
         if (docs != null) {
             for (DocumentModel doc : docs) {
-                if (doc != null
-                        && clService.isClassifiable(doc)) {
+                if (doc != null && clService.isClassifiable(doc)) {
                     filtered.add(doc);
                 }
             }
@@ -201,20 +202,22 @@ public class ClassificationActionsBean implements ClassificationActions {
 
     /**
      * Classifies given documents in given classification folder.
-     *
+     * 
      * @return true on error
      */
     @SuppressWarnings("unchecked")
     public boolean classify(Collection<DocumentModel> targetDocs,
             DocumentModel classificationFolder) throws ClientException {
         if (targetDocs.isEmpty()) {
-            facesMessages.add(StatusMessage.Severity.ERROR,
+            facesMessages.add(
+                    StatusMessage.Severity.ERROR,
                     resourcesAccessor.getMessages().get(
                             "feedback.classification.noDocumentsToClassify"));
             return true;
         }
         if (classificationFolder == null) {
-            facesMessages.add(StatusMessage.Severity.ERROR,
+            facesMessages.add(
+                    StatusMessage.Severity.ERROR,
                     resourcesAccessor.getMessages().get(
                             "feedback.classification.noClassificationFolder"));
             return true;
@@ -226,66 +229,26 @@ public class ClassificationActionsBean implements ClassificationActions {
                             "feedback.classification.invalidClassificationFolder"));
             return true;
         }
+
         DocumentRef classificationRef = classificationFolder.getRef();
         if (!documentManager.hasPermission(classificationRef,
                 ClassificationConstants.CLASSIFY)) {
-            facesMessages.add(StatusMessage.Severity.ERROR,
+            facesMessages.add(
+                    StatusMessage.Severity.ERROR,
                     resourcesAccessor.getMessages().get(
                             "feedback.classification.unauthorized"));
             return true;
         }
 
-        // edit classification folder adding given document ids
-        ArrayList<String> targets = (ArrayList<String>) classificationFolder.getPropertyValue(ClassificationConstants.CLASSIFICATION_TARGETS_PROPERTY_NAME);
-        if (targets == null) {
-            targets = new ArrayList<String>();
-        }
-        String targetNotificationComment = String.format("%s:%s",
-                documentManager.getRepositoryName(),
-                classificationRef.toString());
-        boolean alreadyClassified = false;
-        // track if some documents cannot be classified
-        boolean invalid = false;
-        // avoid duplicates
-        ClassificationService clService;
-        try {
-            clService = Framework.getService(ClassificationService.class);
-        } catch (Exception e) {
-            throw new ClientException("Could not find Classification Service", e);
-        }
-        for (DocumentModel targetDoc : targetDocs) {
-            if (targetDoc == null) {
-                continue;
-            }
-            if (!clService.isClassifiable(targetDoc)) {
-                invalid = true;
-                continue;
-            }
-            String targetDocId = targetDoc.getId();
-            if (targets.contains(targetDocId)) {
-                alreadyClassified = true;
-                continue;
-            }
-            targets.add(targetDocId);
-            // notify on classification folder
-            String comment = String.format("%s:%s",
-                    documentManager.getRepositoryName(), targetDocId);
-            notifyEvent(documentManager,
-                    ClassificationConstants.EVENT_CLASSIFICATION_DONE,
-                    classificationFolder, null, comment, null, null);
-            // notify on each classified document
-            notifyEvent(documentManager,
-                    ClassificationConstants.EVENT_CLASSIFICATION_DONE,
-                    targetDoc, null, targetNotificationComment, null, null);
+        ClassificationService classificationService = Framework.getLocalService(ClassificationService.class);
 
-        }
-        classificationFolder.setPropertyValue(
-                ClassificationConstants.CLASSIFICATION_TARGETS_PROPERTY_NAME,
-                targets);
-        documentManager.saveDocument(classificationFolder);
-        documentManager.save();
+        Map<ClassificationService.CLASSIFY_STATE, List<String>> classify = classificationService.classify(
+                classificationFolder, targetDocs);
 
         Events.instance().raiseEvent(AuditEventTypes.HISTORY_CHANGED);
+
+        boolean invalid = classify.containsKey(ClassificationService.CLASSIFY_STATE.INVALID);
+        boolean alreadyClassified = classify.containsKey(ClassificationService.CLASSIFY_STATE.ALREADY_CLASSIFIED);
 
         if (invalid && alreadyClassified) {
             facesMessages.add(
@@ -303,7 +266,8 @@ public class ClassificationActionsBean implements ClassificationActions {
                     resourcesAccessor.getMessages().get(
                             "feedback.classification.requestDoneButSomeWereAlreadyClassified"));
         } else {
-            facesMessages.add(StatusMessage.Severity.INFO,
+            facesMessages.add(
+                    StatusMessage.Severity.INFO,
                     resourcesAccessor.getMessages().get(
                             "feedback.classification.requestDone"));
         }
@@ -419,8 +383,8 @@ public class ClassificationActionsBean implements ClassificationActions {
                             e);
                 }
                 // standard tree node: no need to show classified documents
-                currentClassificationTree = new DocumentTreeNodeImpl(documentManager.getSessionId(), root,
-                        filter, sorter);
+                currentClassificationTree = new DocumentTreeNodeImpl(
+                        documentManager.getSessionId(), root, filter, sorter);
             }
         }
         return currentClassificationTree;
@@ -572,8 +536,8 @@ public class ClassificationActionsBean implements ClassificationActions {
 
     protected PagedDocumentsProvider getQmDocuments(String qmName,
             Object[] params, SortInfo sortInfo) throws ClientException {
-        return queryModelActions.get(qmName).getResultsProvider(documentManager,
-                params, sortInfo);
+        return queryModelActions.get(qmName).getResultsProvider(
+                documentManager, params, sortInfo);
     }
 
     public PagedDocumentsProvider getResultsProvider(String name)
@@ -598,16 +562,15 @@ public class ClassificationActionsBean implements ClassificationActions {
         DocumentModelList documents = resultsProvidersCache.get(
                 CURRENT_DOCUMENT_CLASSIFICATIONS_PROVIDER).getCurrentPage();
         List<DocumentModel> selectedDocuments = documentsListsManager.getWorkingList(CURRENT_DOCUMENT_CLASSIFICATIONS_SELECTION);
-        SelectDataModel model = new SelectDataModelImpl(
+        return new SelectDataModelImpl(
                 CURRENT_DOCUMENT_CLASSIFICATIONS_SELECTION, documents,
                 selectedDocuments);
-        return model;
     }
 
     /**
      * Returns classification form for selected documents
-     *
-     * @param currentviewId the current view id, so that redirection can be done
+     * 
+     * @param currentViewId the current view id, so that redirection can be done
      *            correctly on cancel.
      */
     public String showCurrentSelectionClassificationForm(String currentViewId)
@@ -648,9 +611,8 @@ public class ClassificationActionsBean implements ClassificationActions {
         List<DocumentModel> docs = resultsProvidersCache.get(
                 CURRENT_SELECTION_FOR_CLASSIFICATION_PROVIDER).getCurrentPage();
         List<DocumentModel> selectedDocuments = documentsListsManager.getWorkingList(CURRENT_SELECTION_FOR_CLASSIFICATION);
-        SelectDataModel model = new SelectDataModelImpl(
-                CURRENT_SELECTION_FOR_CLASSIFICATION, docs, selectedDocuments);
-        return model;
+        return new SelectDataModelImpl(CURRENT_SELECTION_FOR_CLASSIFICATION,
+                docs, selectedDocuments);
     }
 
     public void unclassify() throws ClientException {
@@ -670,7 +632,8 @@ public class ClassificationActionsBean implements ClassificationActions {
 
     protected void notifyEvent(CoreSession coreSession, String eventId,
             DocumentModel source, String category, String comment,
-            String author, Map<String, Serializable> options) throws ClientException {
+            String author, Map<String, Serializable> options)
+            throws ClientException {
 
         // Default category
         if (category == null) {
@@ -708,8 +671,8 @@ public class ClassificationActionsBean implements ClassificationActions {
             principal = coreSession.getPrincipal();
         }
 
-
-        DocumentEventContext ctx = new DocumentEventContext(coreSession, principal, source);
+        DocumentEventContext ctx = new DocumentEventContext(coreSession,
+                principal, source);
         ctx.setCategory(category);
         ctx.setComment(comment);
         ctx.setProperties(options);
@@ -728,7 +691,7 @@ public class ClassificationActionsBean implements ClassificationActions {
 
     /**
      * Unclassifies given document ids in given classification folder.
-     *
+     * 
      * @return true on error
      */
     public boolean unclassify(Collection<String> targetDocIds,
@@ -741,7 +704,8 @@ public class ClassificationActionsBean implements ClassificationActions {
             return true;
         }
         if (classificationFolder == null) {
-            facesMessages.add(StatusMessage.Severity.ERROR,
+            facesMessages.add(
+                    StatusMessage.Severity.ERROR,
                     resourcesAccessor.getMessages().get(
                             "feedback.classification.noClassificationFolder"));
             return true;
@@ -756,61 +720,27 @@ public class ClassificationActionsBean implements ClassificationActions {
         DocumentRef classificationRef = classificationFolder.getRef();
         if (!documentManager.hasPermission(classificationRef,
                 ClassificationConstants.CLASSIFY)) {
-            facesMessages.add(StatusMessage.Severity.ERROR,
+            facesMessages.add(
+                    StatusMessage.Severity.ERROR,
                     resourcesAccessor.getMessages().get(
                             "feedback.unclassification.unauthorized"));
             return true;
         }
 
-        // edit classification folder adding given document ids
-        @SuppressWarnings("unchecked")
-        ArrayList<String> targets = (ArrayList<String>) classificationFolder.getPropertyValue(ClassificationConstants.CLASSIFICATION_TARGETS_PROPERTY_NAME);
-        if (targets == null) {
-            targets = new ArrayList<String>();
-        }
-        String targetNotificationComment = String.format("%s:%s",
-                documentManager.getRepositoryName(),
-                classificationRef.toString());
-        boolean notClassified = false;
-        // avoid duplicates
-        for (String targetDocId : targetDocIds) {
-            if (targets.contains(targetDocId)) {
-                targets.remove(targetDocId);
-                // notify on classification folder
-                String comment = String.format("%s:%s",
-                        documentManager.getRepositoryName(), targetDocId);
-                notifyEvent(documentManager,
-                        ClassificationConstants.EVENT_UNCLASSIFICATION_DONE,
-                        classificationFolder, null, comment, null, null);
-                // notify on each classified document
-                DocumentModel targetDoc = documentManager.getDocument(new IdRef(
-                        targetDocId));
-                if (targetDoc != null) {
-                    notifyEvent(
-                            documentManager,
-                            ClassificationConstants.EVENT_UNCLASSIFICATION_DONE,
-                            targetDoc, null, targetNotificationComment, null,
-                            null);
-                }
-            } else {
-                notClassified = true;
-            }
-        }
-        classificationFolder.setPropertyValue(
-                ClassificationConstants.CLASSIFICATION_TARGETS_PROPERTY_NAME,
-                targets);
-        documentManager.saveDocument(classificationFolder);
-        documentManager.save();
+        ClassificationService classificationService = Framework.getLocalService(ClassificationService.class);
+        Map<ClassificationService.UNCLASSIFY_STATE, List<String>> listMap = classificationService.unClassify(
+                classificationFolder, targetDocIds);
 
         Events.instance().raiseEvent(AuditEventTypes.HISTORY_CHANGED);
 
-        if (notClassified) {
+        if (listMap.containsKey(NOT_CLASSIFIED)) {
             facesMessages.add(
                     StatusMessage.Severity.WARN,
                     resourcesAccessor.getMessages().get(
                             "feedback.unclassification.requestDoneButSomeWereNotClassified"));
         } else {
-            facesMessages.add(StatusMessage.Severity.INFO,
+            facesMessages.add(
+                    StatusMessage.Severity.INFO,
                     resourcesAccessor.getMessages().get(
                             "feedback.unclassification.requestDone"));
         }

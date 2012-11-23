@@ -19,22 +19,34 @@
 
 package org.nuxeo.ecm.classification.api;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
+import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentRef;
 
 /**
  * Classification service is used to register classifiable Document Types.
- *
+ * 
  * @author ldoguin
  */
 public interface ClassificationService {
+
+    enum CLASSIFY_STATE {
+        CLASSIFIED, INVALID, ALREADY_CLASSIFIED
+    }
+
+    enum UNCLASSIFY_STATE {
+        NOT_CLASSIFIED, UNCLASSIFIED
+    }
 
     /**
      * This will return only the document types that was contributed as
      * classifiable. It is recommanded to use the facet Classifiable instead of
      * the contribution.
-     *
+     * 
      * @return the list of registered Document Types as String
      */
     @Deprecated
@@ -44,7 +56,7 @@ public interface ClassificationService {
      * If this type of document is classifiable. It is recommanded to use
      * {@link #isClassifiable(DocumentModel)} and to add the facet Classifiable
      * to the classifiable document instead of use the contribution.
-     *
+     * 
      * @param docType
      * @return true if the given doc type is registered.
      */
@@ -53,10 +65,38 @@ public interface ClassificationService {
 
     /**
      * If this document is classifiable
-     *
+     * 
      * @param doc
      * @return
      */
     boolean isClassifiable(DocumentModel doc);
 
+    /**
+     * Try to classify targets document into the classificationFolder. Method
+     * return a map containing references to classified documents, already
+     * classified documents or invalid documents. Lists are not initialized
+     * until there is at least one corresponding documents.
+     * 
+     * @since 5.7
+     *@param classificationFolder expected classification folder
+     * @param targetDocs documents wanted to be classified
+     */
+    Map<CLASSIFY_STATE, List<String>> classify(
+            DocumentModel classificationFolder,
+            Collection<DocumentModel> targetDocs) throws ClientException;
+
+    /**
+     * Try to unclassify targets document into the classificationFolder. Method
+     * return a map containing references to classified documents, already
+     * classified documents or invalid documents. Lists are not initialized
+     * until there is at least one corresponding documents.
+     *
+     * @since 5.7
+     *
+     * @param classificationFolder expected classification folder
+     * @param targetDocs documents id wanted to be unclassified
+     */
+    Map<UNCLASSIFY_STATE, List<String>> unClassify(
+            DocumentModel classificationFolder,
+            Collection<String> targetDocs) throws ClientException;
 }
