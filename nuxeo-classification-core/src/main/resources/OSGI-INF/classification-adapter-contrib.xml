@@ -2,7 +2,7 @@
 <component name="org.nuxeo.ecm.classification.adapter">
 
   <extension target="org.nuxeo.ecm.core.api.DocumentAdapterService" point="adapters">
-    <adapter class="org.nuxeo.ecm.classification.core.adapter.Classification"
+    <adapter class="org.nuxeo.ecm.classification.api.adapter.Classification"
              factory="org.nuxeo.ecm.classification.core.adapter.ClassificationAdapterFactory"/>
   </extension>
 

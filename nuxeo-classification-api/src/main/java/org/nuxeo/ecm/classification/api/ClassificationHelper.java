@@ -19,8 +19,7 @@
 
 package org.nuxeo.ecm.classification.api;
 
-import java.util.List;
-
+import org.nuxeo.ecm.classification.api.adapter.Classification;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -38,36 +37,13 @@ import org.nuxeo.ecm.core.api.security.SecurityConstants;
 public class ClassificationHelper {
 
     /**
-     * Returns resolved classified documents using given session.
-     * <p>
-     * Classified documents are kept on a specific property in the container.
-     *
-     * @throws ClientException
+     * @see org.nuxeo.ecm.classification.api.adapter.Classification
+     * @deprecated use the expected Adapter now
      */
-    @SuppressWarnings("unchecked")
-    public static final DocumentModelList getClassifiedDocuments(
+    public static DocumentModelList getClassifiedDocuments(
             DocumentModel container, CoreSession session)
             throws ClientException {
-        DocumentModelList targets = new DocumentModelListImpl();
-        if (container != null) {
-            if (container.hasSchema(ClassificationConstants.CLASSIFICATION_SCHEMA_NAME)) {
-                List<String> targetIds = (List<String>) container.getPropertyValue(ClassificationConstants.CLASSIFICATION_TARGETS_PROPERTY_NAME);
-                if (targetIds != null) {
-                    for (String targetId : targetIds) {
-                        DocumentRef targetRef = new IdRef(targetId);
-                        if (session.exists(targetRef)
-                                && session.hasPermission(targetRef,
-                                        SecurityConstants.READ)) {
-                            DocumentModel target = session.getDocument(targetRef);
-                            if (target != null) {
-                                targets.add(target);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return targets;
+        Classification adapter = container.getAdapter(Classification.class);
+        return adapter.getClassifiedDocuments();
     }
-
 }

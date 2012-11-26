@@ -31,18 +31,16 @@ import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_
 
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.classification.api.ClassificationService;
-import org.nuxeo.ecm.classification.core.adapter.Classification;
+import org.nuxeo.ecm.classification.api.adapter.Classification;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.PathRef;
-import org.nuxeo.ecm.core.storage.sql.SQLRepositoryTestCase;
 import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
 import org.nuxeo.ecm.core.test.annotations.BackendType;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
 import org.nuxeo.ecm.platform.test.PlatformFeature;
-import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
@@ -117,7 +115,7 @@ public class TestClassificationService {
 
         session.save();
         classifFolder = session.getDocument(classifFolder.getRef());
-        assertEquals(4, classifFolder.getAdapter(Classification.class).getClassifiedDocument().size());
+        assertEquals(4, classifFolder.getAdapter(Classification.class).getClassifiedDocumentIds().size());
 
         docs.add(session.createDocument(session.createDocumentModel(
                 testWorkspace, "xxx-", "File")));
@@ -132,7 +130,7 @@ public class TestClassificationService {
 
         session.save();
         classifFolder = session.getDocument(classifFolder.getRef());
-        assertEquals(5, classifFolder.getAdapter(Classification.class).getClassifiedDocument().size());
+        assertEquals(5, classifFolder.getAdapter(Classification.class).getClassifiedDocumentIds().size());
 
         Map<ClassificationService.UNCLASSIFY_STATE, List<String>> unclassify_stateListMap = cs.unClassify(classifFolder, docIds);
         assertEquals(1, unclassify_stateListMap.get(NOT_CLASSIFIED).size());

@@ -24,7 +24,7 @@ import java.util.LinkedHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.nuxeo.ecm.classification.api.ClassificationHelper;
+import org.nuxeo.ecm.classification.api.adapter.Classification;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreInstance;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -37,7 +37,7 @@ import org.nuxeo.ecm.webapp.tree.DocumentTreeNodeImpl;
 
 /**
  * Tree node taking care of classified documents within a document
- *
+ * 
  * @author Anahide Tchertchian
  */
 public class ClassificationTreeNode extends DocumentTreeNodeImpl {
@@ -71,8 +71,9 @@ public class ClassificationTreeNode extends DocumentTreeNodeImpl {
 
             // add classified files as children, respecting PLE-252 (folders
             // first) as classified files are never folderish
-            DocumentModelList classifChildren = ClassificationHelper.getClassifiedDocuments(
-                    document, session);
+            DocumentModelList classifChildren = document.getAdapter(
+                    Classification.class).getClassifiedDocuments();
+
             // sort according to original sorter
             Collections.sort(classifChildren, sorter);
             for (DocumentModel child : classifChildren) {

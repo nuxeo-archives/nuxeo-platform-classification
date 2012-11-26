@@ -27,7 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.classification.api.ClassificationConstants;
 import org.nuxeo.ecm.classification.api.ClassificationService;
-import org.nuxeo.ecm.classification.core.adapter.Classification;
+import org.nuxeo.ecm.classification.api.adapter.Classification;
 import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.api.event.CoreEventConstants;
 import org.nuxeo.ecm.core.api.event.DocumentEventCategories;
@@ -42,7 +42,6 @@ import org.nuxeo.runtime.model.ComponentContext;
 import org.nuxeo.runtime.model.ComponentInstance;
 import org.nuxeo.runtime.model.DefaultComponent;
 
-import static org.nuxeo.ecm.classification.api.ClassificationConstants.CLASSIFICATION_TARGETS_PROPERTY_NAME;
 import static org.nuxeo.ecm.classification.api.ClassificationConstants.CLASSIFY;
 import static org.nuxeo.ecm.classification.api.ClassificationConstants.EVENT_CLASSIFICATION_DONE;
 import static org.nuxeo.ecm.classification.api.ClassificationService.CLASSIFY_STATE.*;
