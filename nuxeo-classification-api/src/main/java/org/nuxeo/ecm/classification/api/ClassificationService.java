@@ -78,10 +78,10 @@ public interface ClassificationService {
      * until there is at least one corresponding documents.
      * 
      * @since 5.7
-     *@param classificationFolder expected classification folder
+     * @param classificationFolder expected classification folder
      * @param targetDocs documents wanted to be classified
      */
-    Map<CLASSIFY_STATE, List<String>> classify(
+    ClassificationResult<CLASSIFY_STATE> classify(
             DocumentModel classificationFolder,
             Collection<DocumentModel> targetDocs) throws ClientException;
 
@@ -90,13 +90,13 @@ public interface ClassificationService {
      * return a map containing references to classified documents, already
      * classified documents or invalid documents. Lists are not initialized
      * until there is at least one corresponding documents.
-     *
+     * 
      * @since 5.7
-     *
+     * 
      * @param classificationFolder expected classification folder
      * @param targetDocs documents id wanted to be unclassified
      */
-    Map<UNCLASSIFY_STATE, List<String>> unClassify(
-            DocumentModel classificationFolder,
-            Collection<String> targetDocs) throws ClientException;
+    ClassificationResult<UNCLASSIFY_STATE> unClassify(
+            DocumentModel classificationFolder, Collection<String> targetDocs)
+            throws ClientException;
 }

@@ -30,6 +30,7 @@ import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_
 import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.UNCLASSIFIED;
 
 import org.junit.runner.RunWith;
+import org.nuxeo.ecm.classification.api.ClassificationResult;
 import org.nuxeo.ecm.classification.api.ClassificationService;
 import org.nuxeo.ecm.classification.api.adapter.Classification;
 import org.nuxeo.ecm.core.api.ClientException;
@@ -107,11 +108,11 @@ public class TestClassificationService {
         assertEquals(4, docs.size());
         assertEquals(0, session.getChildren(classifFolder.getRef()).size());
 
-        Map<ClassificationService.CLASSIFY_STATE, List<String>> classified = cs.classify(
+        ClassificationResult<ClassificationService.CLASSIFY_STATE> classified = cs.classify(
                 classifFolder, docs);
         assertEquals(4, classified.get(CLASSIFIED).size());
-        assertFalse(classified.containsKey(INVALID));
-        assertFalse(classified.containsKey(ALREADY_CLASSIFIED));
+        assertFalse(classified.contains(INVALID));
+        assertFalse(classified.contains(ALREADY_CLASSIFIED));
 
         session.save();
         classifFolder = session.getDocument(classifFolder.getRef());
@@ -132,8 +133,8 @@ public class TestClassificationService {
         classifFolder = session.getDocument(classifFolder.getRef());
         assertEquals(5, classifFolder.getAdapter(Classification.class).getClassifiedDocumentIds().size());
 
-        Map<ClassificationService.UNCLASSIFY_STATE, List<String>> unclassify_stateListMap = cs.unClassify(classifFolder, docIds);
-        assertEquals(1, unclassify_stateListMap.get(NOT_CLASSIFIED).size());
-        assertEquals(1, unclassify_stateListMap.get(UNCLASSIFIED).size());
+        ClassificationResult<ClassificationService.UNCLASSIFY_STATE> unclassified = cs.unClassify(classifFolder, docIds);
+        assertEquals(1, unclassified.get(NOT_CLASSIFIED).size());
+        assertEquals(1, unclassified.get(UNCLASSIFIED).size());
     }
 }

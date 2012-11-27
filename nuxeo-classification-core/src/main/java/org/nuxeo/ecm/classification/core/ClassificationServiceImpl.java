@@ -26,6 +26,7 @@ import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.classification.api.ClassificationConstants;
+import org.nuxeo.ecm.classification.api.ClassificationResult;
 import org.nuxeo.ecm.classification.api.ClassificationService;
 import org.nuxeo.ecm.classification.api.adapter.Classification;
 import org.nuxeo.ecm.core.api.*;
@@ -112,10 +113,10 @@ public class ClassificationServiceImpl extends DefaultComponent implements
     }
 
     @Override
-    public Map<CLASSIFY_STATE, List<String>> classify(
+    public ClassificationResult<CLASSIFY_STATE> classify(
             DocumentModel classificationFolder,
             Collection<DocumentModel> targetDocs) throws ClientException {
-        Map<CLASSIFY_STATE, List<String>> returnsMap = new HashMap<CLASSIFY_STATE, List<String>>();
+        ClassificationResult<CLASSIFY_STATE> result = new ClassificationResult<CLASSIFY_STATE>();
         CoreSession session = classificationFolder.getCoreSession();
         if (session == null) {
             throw new ClientException(
@@ -133,19 +134,16 @@ public class ClassificationServiceImpl extends DefaultComponent implements
         Classification classification = classificationFolder.getAdapter(Classification.class);
         for (DocumentModel targetDoc : targetDocs) {
             if (!isClassifiable(targetDoc)) {
-                addDocumentToClassifiedList(returnsMap, INVALID,
-                        targetDoc.getId());
+                result.add(INVALID, targetDoc.getId());
                 continue;
             }
 
             if (classification.contains(targetDoc.getId())) {
-                addDocumentToClassifiedList(returnsMap, ALREADY_CLASSIFIED,
-                        targetDoc.getId());
+                result.add(ALREADY_CLASSIFIED, targetDoc.getId());
                 continue;
             }
 
-            addDocumentToClassifiedList(returnsMap, CLASSIFIED,
-                    targetDoc.getId());
+            result.add(CLASSIFIED, targetDoc.getId());
             classification.add(targetDoc.getId());
 
             // notify on classification folder
@@ -160,14 +158,14 @@ public class ClassificationServiceImpl extends DefaultComponent implements
 
         session.saveDocument(classification.getDocument());
 
-        return returnsMap;
+        return result;
     }
 
     @Override
-    public Map<UNCLASSIFY_STATE, List<String>> unClassify(
+    public ClassificationResult<UNCLASSIFY_STATE> unClassify(
             DocumentModel classificationFolder, Collection<String> targetDocs)
             throws ClientException {
-        Map<UNCLASSIFY_STATE, List<String>> returnsMap = new HashMap<UNCLASSIFY_STATE, List<String>>();
+        ClassificationResult<UNCLASSIFY_STATE> result = new ClassificationResult<UNCLASSIFY_STATE>();
         CoreSession session = classificationFolder.getCoreSession();
         if (session == null) {
             throw new ClientException(
@@ -183,7 +181,7 @@ public class ClassificationServiceImpl extends DefaultComponent implements
         for (String docId : targetDocs) {
             if (classification.contains(docId)) {
                 classification.remove(docId);
-                addDocumentToClassifiedList(returnsMap, UNCLASSIFIED, docId);
+                result.add(UNCLASSIFIED, docId);
 
                 String comment = String.format("%s:%s",
                         session.getRepositoryName(), docId);
@@ -203,23 +201,13 @@ public class ClassificationServiceImpl extends DefaultComponent implements
                             null);
                 }
             } else {
-                addDocumentToClassifiedList(returnsMap, NOT_CLASSIFIED, docId);
+                result.add(NOT_CLASSIFIED, docId);
             }
         }
 
         session.saveDocument(classification.getDocument());
 
-        return returnsMap;
-    }
-
-    protected static void addDocumentToClassifiedList(Map list, Enum state,
-            String docId) {
-        List<String> docList = (List<String>) list.get(state);
-        if (docList == null) {
-            docList = new ArrayList<String>();
-            list.put(state, docList);
-        }
-        docList.add(docId);
+        return result;
     }
 
     protected static void notifyEvent(CoreSession coreSession, String eventId,

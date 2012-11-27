@@ -28,6 +28,7 @@ import org.jboss.seam.contexts.Context;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.nuxeo.ecm.classification.api.ClassificationConstants;
+import org.nuxeo.ecm.classification.api.ClassificationResult;
 import org.nuxeo.ecm.classification.api.ClassificationService;
 import org.nuxeo.ecm.classification.api.adapter.Classification;
 import org.nuxeo.ecm.core.api.*;
@@ -210,13 +211,13 @@ public class ClassificationActionsBean implements ClassificationActions {
 
         ClassificationService classificationService = Framework.getLocalService(ClassificationService.class);
 
-        Map<ClassificationService.CLASSIFY_STATE, List<String>> classify = classificationService.classify(
+        ClassificationResult<ClassificationService.CLASSIFY_STATE> classify = classificationService.classify(
                 classificationFolder, targetDocs);
 
         Events.instance().raiseEvent(AuditEventTypes.HISTORY_CHANGED);
 
-        boolean invalid = classify.containsKey(ClassificationService.CLASSIFY_STATE.INVALID);
-        boolean alreadyClassified = classify.containsKey(ClassificationService.CLASSIFY_STATE.ALREADY_CLASSIFIED);
+        boolean invalid = classify.contains(ClassificationService.CLASSIFY_STATE.INVALID);
+        boolean alreadyClassified = classify.contains(ClassificationService.CLASSIFY_STATE.ALREADY_CLASSIFIED);
 
         if (invalid && alreadyClassified) {
             facesMessages.add(
@@ -572,12 +573,12 @@ public class ClassificationActionsBean implements ClassificationActions {
         }
 
         ClassificationService classificationService = Framework.getLocalService(ClassificationService.class);
-        Map<ClassificationService.UNCLASSIFY_STATE, List<String>> listMap = classificationService.unClassify(
+        ClassificationResult<ClassificationService.UNCLASSIFY_STATE> listMap = classificationService.unClassify(
                 classificationFolder, targetDocIds);
 
         Events.instance().raiseEvent(AuditEventTypes.HISTORY_CHANGED);
 
-        if (listMap.containsKey(NOT_CLASSIFIED)) {
+        if (listMap.contains(NOT_CLASSIFIED)) {
             facesMessages.add(
                     WARN,
                     messages.get("feedback.unclassification.requestDoneButSomeWereNotClassified"));
