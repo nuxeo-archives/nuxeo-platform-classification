@@ -5,9 +5,10 @@
   <extension target="org.nuxeo.ecm.platform.actions.ActionService"
     point="actions">
 
+    <!-- disable to use default create document form -->
     <action id="newClassificationRoot"
       link="#{documentActions.createDocument('ClassificationRoot')}"
-      enabled="true" label="command.createClassificationRoot"
+      enabled="false" label="command.createClassificationRoot"
       icon="/icons/action_add_file.gif">
       <category>SUBVIEW_UPPER_LIST</category>
       <filter id="newClassificationRoot">
@@ -18,9 +19,10 @@
       </filter>
     </action>
 
+    <!-- disable to use default create document form -->
     <action id="newClassificationFolder"
       link="#{documentActions.createDocument('ClassificationFolder')}"
-      enabled="true" label="command.createClassificationFolder"
+      enabled="false" label="command.createClassificationFolder"
       icon="/icons/action_add_file.gif">
       <category>SUBVIEW_UPPER_LIST</category>
       <filter id="newClassificationFolder">
@@ -34,26 +36,6 @@
     <!-- avoid rights setting on classification folders -->
     <action id="TAB_RIGHTS">
       <filter-id>is_not_classification_folder</filter-id>
-    </action>
-
-    <action id="TAB_CONTENT">
-      <filter id="is_not_classification_container">
-        <rule grant="false">
-          <schema>classification</schema>
-        </rule>
-      </filter>
-    </action>
-
-    <!-- specific content presentation for classification containers -->
-    <action id="TAB_CLASSIFICATION_CONTENT"
-      link="/classification/classification_content.xhtml" order="10"
-      label="action.view.content">
-      <category>VIEW_ACTION_LIST</category>
-      <filter id="is_classification_container">
-        <rule grant="true">
-          <schema>classification</schema>
-        </rule>
-      </filter>
     </action>
 
     <action id="unclassify_selection"

@@ -22,7 +22,7 @@
         org.nuxeo.ecm.webapp.tree.BigFolderLeafFilter
       </leafFilterClass>
       <sortPropertyPath>dc:title</sortPropertyPath>
-      <queryModel>CLASSIFICATION_ROOTS</queryModel>
+      <pageProvider>CLASSIFICATION_ROOTS</pageProvider>
     </treeManagerPlugin>
 
   </extension>

@@ -6,9 +6,9 @@
 
     <contentView name="CLASSIFIED_DOCUMENTS">
 
-      <title>label.contentview.document.classified</title>
+      <title>label.classification.currentClassifications</title>
       <translateTitle>true</translateTitle>
-      <showTitle>false</showTitle>
+      <showTitle>true</showTitle>
 
       <genericPageProvider class="org.nuxeo.ecm.platform.classification.ClassifiedPageProvider">
         <property name="currentDocument">#{currentDocument}</property>
@@ -25,6 +25,38 @@
       <cacheKey>#{currentDocument.id}</cacheKey>
 
       <actions category="CURRENT_DOCUMENT_CLASSIFICATIONS"/>
+
+      <resultLayouts>
+        <layout name="document_listing_ajax" title="document_listing"
+                translateTitle="true" iconPath="/icons/document_listing_icon.png"
+                showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
+        <layout name="document_listing_ajax_compact_2_columns" title="document_listing_compact_2_columns"
+                translateTitle="true" iconPath="/icons/document_listing_compact_2_columns_icon.png"
+                showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
+        <layout name="document_listing_ajax_icon_2_columns" title="document_listing_icon_2_columns"
+                translateTitle="true" iconPath="/icons/document_listing_icon_2_columns_icon.png"
+                showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
+      </resultLayouts>
+
+    </contentView>
+
+    <contentView name="MASS_CLASSIFICATION_REQUEST">
+
+      <title>label.contentview.document.classified</title>
+      <translateTitle>true</translateTitle>
+      <showTitle>false</showTitle>
+
+      <genericPageProvider class="org.nuxeo.ecm.platform.query.core.DocumentModelListPageProvider" />
+
+      <selectionList>CURRENT_SELECTION_FOR_CLASSIFICATION</selectionList>
+      <showPageSizeSelector>false</showPageSizeSelector>
+      <useGlobalPageSize>true</useGlobalPageSize>
+      <refresh>
+        <event>documentChanged</event>
+        <event>documentCreated</event>
+      </refresh>
+      <cacheSize>10</cacheSize>
+      <cacheKey>#{currentDocument.id}</cacheKey>
 
       <resultLayouts>
         <layout name="document_listing_ajax" title="document_listing"

@@ -7,8 +7,7 @@ Bundle-Vendor: Nuxeo
 Export-Package: org.nuxeo.ecm.platform.classification
 Bundle-Category: stateless
 Nuxeo-Component: OSGI-INF/classification-ecm-types-contrib.xml,
- OSGI-INF/classification-resultsprovider-contrib.xml,
- OSGI-INF/classification-querymodel-contrib.xml,
+ OSGI-INF/classification-corequery-contrib.xml,
  OSGI-INF/classification-treemanager-contrib.xml,
  OSGI-INF/classification-documentslists-contrib.xml,
  OSGI-INF/classification-actions-contrib.xml,

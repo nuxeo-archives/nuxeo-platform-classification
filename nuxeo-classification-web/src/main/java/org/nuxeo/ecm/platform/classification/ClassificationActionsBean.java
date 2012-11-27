@@ -19,67 +19,42 @@
 
 package org.nuxeo.ecm.platform.classification;
 
-import static org.jboss.seam.ScopeType.EVENT;
-import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
-import static org.jboss.seam.international.StatusMessage.Severity.INFO;
-import static org.jboss.seam.international.StatusMessage.Severity.WARN;
-import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.NOT_CLASSIFIED;
-
-import java.io.Serializable;
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.faces.event.ValueChangeEvent;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Factory;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Context;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.nuxeo.ecm.classification.api.ClassificationConstants;
 import org.nuxeo.ecm.classification.api.ClassificationService;
 import org.nuxeo.ecm.classification.api.adapter.Classification;
-import org.nuxeo.ecm.core.api.ClientException;
-import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.DocumentModelList;
-import org.nuxeo.ecm.core.api.DocumentRef;
-import org.nuxeo.ecm.core.api.Filter;
-import org.nuxeo.ecm.core.api.PagedDocumentsProvider;
-import org.nuxeo.ecm.core.api.SortInfo;
-import org.nuxeo.ecm.core.api.Sorter;
-import org.nuxeo.ecm.core.api.event.CoreEventConstants;
-import org.nuxeo.ecm.core.api.event.DocumentEventCategories;
+import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
-import org.nuxeo.ecm.core.api.impl.UserPrincipal;
-import org.nuxeo.ecm.core.event.Event;
-import org.nuxeo.ecm.core.event.EventProducer;
-import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
 import org.nuxeo.ecm.platform.audit.api.AuditEventTypes;
+import org.nuxeo.ecm.platform.contentview.jsf.ContentView;
 import org.nuxeo.ecm.platform.contentview.seam.ContentViewActions;
+import org.nuxeo.ecm.platform.query.api.PageProvider;
+import org.nuxeo.ecm.platform.query.api.PageProviderService;
+import org.nuxeo.ecm.platform.query.core.DocumentModelListPageProvider;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
-import org.nuxeo.ecm.platform.ui.web.model.SelectDataModel;
-import org.nuxeo.ecm.platform.ui.web.model.impl.SelectDataModelImpl;
-import org.nuxeo.ecm.platform.ui.web.pagination.ResultsProviderFarmUserException;
 import org.nuxeo.ecm.webapp.action.TypesTool;
 import org.nuxeo.ecm.webapp.documentsLists.DocumentsListsManager;
 import org.nuxeo.ecm.webapp.helpers.EventNames;
-import org.nuxeo.ecm.webapp.pagination.ResultsProvidersCache;
-import org.nuxeo.ecm.webapp.querymodel.QueryModelActions;
 import org.nuxeo.ecm.webapp.tree.DocumentTreeNode;
 import org.nuxeo.ecm.webapp.tree.DocumentTreeNodeImpl;
 import org.nuxeo.ecm.webapp.tree.TreeManager;
 import org.nuxeo.runtime.api.Framework;
+
+import javax.faces.event.ValueChangeEvent;
+import java.io.Serializable;
+import java.util.*;
+
+import static org.jboss.seam.ScopeType.EVENT;
+import static org.jboss.seam.international.StatusMessage.Severity.*;
+import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.NOT_CLASSIFIED;
+import static org.nuxeo.ecm.platform.query.nxql.CoreQueryDocumentPageProvider.CORE_SESSION_PROPERTY;
 
 /**
  * Handles classification actions
@@ -108,12 +83,6 @@ public class ClassificationActionsBean implements ClassificationActions {
 
     @In(create = true, required = false)
     protected transient CoreSession documentManager;
-
-    @In(create = true)
-    protected transient QueryModelActions queryModelActions;
-
-    @In(create = true)
-    private transient ResultsProvidersCache resultsProvidersCache;
 
     @In(create = true)
     protected transient DocumentsListsManager documentsListsManager;
@@ -414,7 +383,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         if (classificationRoots == null) {
             classificationRoots = new DocumentModelListImpl();
             try {
-                PagedDocumentsProvider provider = getResultsProvider(CLASSIFICATION_ROOTS_PROVIDER_NAME);
+                PageProvider<DocumentModel> provider = getPageProvider(CLASSIFICATION_ROOTS_PROVIDER_NAME);
                 List<DocumentModel> resultDocuments = provider.getCurrentPage();
                 for (DocumentModel doc : resultDocuments) {
                     // XXX refetch it to be a real document model instead of a
@@ -424,13 +393,20 @@ public class ClassificationActionsBean implements ClassificationActions {
                     // children
                     classificationRoots.add(documentManager.getDocument(doc.getRef()));
                 }
-            } catch (ResultsProviderFarmUserException e) {
-                log.error(e);
             } catch (ClientException e) {
                 log.error(e);
             }
         }
         return classificationRoots;
+    }
+
+    protected PageProvider<DocumentModel> getPageProvider(
+            String pageProviderName) throws ClientException {
+        PageProviderService pps = Framework.getLocalService(PageProviderService.class);
+        Map<String, Serializable> props = new HashMap<String, Serializable>();
+        props.put(CORE_SESSION_PROPERTY, (Serializable) documentManager);
+        return (PageProvider<DocumentModel>) pps.getPageProvider(
+                pageProviderName, null, null, null, props, null);
     }
 
     @Factory(value = "editableClassificationRoots", scope = EVENT)
@@ -475,7 +451,6 @@ public class ClassificationActionsBean implements ClassificationActions {
         editableClassificationRoots = null;
         currentEditableClassificationRoot = null;
         currentEditableClassificationTree = null;
-        resultsProvidersCache.invalidate(CLASSIFICATION_ROOTS_PROVIDER_NAME);
         resetCurrentDocumentClassifications();
     }
 
@@ -484,60 +459,8 @@ public class ClassificationActionsBean implements ClassificationActions {
             EventNames.DOCUMENT_SELECTION_CHANGED }, create = false)
     public void resetCurrentDocumentClassifications() {
         currentDocumentClassifications = null;
-        resultsProvidersCache.invalidate(CURRENT_DOCUMENT_CLASSIFICATIONS_PROVIDER);
         documentsListsManager.resetWorkingList(CURRENT_DOCUMENT_CLASSIFICATIONS_SELECTION);
         contentViewActions.refresh(CLASSIFICATION_DOCUMENTS_CONTENT_VIEW);
-    }
-
-    public PagedDocumentsProvider getResultsProvider(String name,
-            SortInfo sortInfo) throws ClientException,
-            ResultsProviderFarmUserException {
-        PagedDocumentsProvider provider;
-        int pageSize = getDocumentBatchSize();
-
-        if (CLASSIFICATION_ROOTS_PROVIDER_NAME.equals(name)) {
-            Object[] params = null;
-            try {
-                provider = getQmDocuments(name, params, sortInfo);
-            } catch (Exception e) {
-                log.error("sorted query failed");
-                log.debug(e);
-                log.error("retrying without sort parameters");
-                provider = getQmDocuments(name, params, null);
-            }
-            provider.setName(name);
-        } else if (CURRENT_DOCUMENT_CLASSIFICATIONS_PROVIDER.equals(name)) {
-            provider = new PagedClassificationsProvider(
-                    getCurrentDocumentClassifications(), pageSize, name,
-                    sortInfo);
-        } else if (CURRENT_SELECTION_FOR_CLASSIFICATION_PROVIDER.equals(name)) {
-            try {
-                // initialize list from current selection list
-                List<DocumentModel> docs = getFilteredSelectedDocumentsForClassification();
-                // initialize selection list too
-                documentsListsManager.resetWorkingList(CURRENT_SELECTION_FOR_CLASSIFICATION);
-                documentsListsManager.addToWorkingList(
-                        CURRENT_SELECTION_FOR_CLASSIFICATION, docs);
-                return new PagedClassificationsProvider(docs, pageSize, name,
-                        sortInfo);
-            } catch (Exception e) {
-                throw new ClientException(e);
-            }
-        } else {
-            throw new ClientException("Unknown board: " + name);
-        }
-        return provider;
-    }
-
-    protected PagedDocumentsProvider getQmDocuments(String qmName,
-            Object[] params, SortInfo sortInfo) throws ClientException {
-        return queryModelActions.get(qmName).getResultsProvider(
-                documentManager, params, sortInfo);
-    }
-
-    public PagedDocumentsProvider getResultsProvider(String name)
-            throws ClientException, ResultsProviderFarmUserException {
-        return getResultsProvider(name, null);
     }
 
     @Factory(value = "currentDocumentClassifications", scope = EVENT)
@@ -552,17 +475,6 @@ public class ClassificationActionsBean implements ClassificationActions {
         return currentDocumentClassifications;
     }
 
-    @Factory(value = "currentDocumentClassificationsSelection", scope = EVENT)
-    public SelectDataModel getCurrentDocumentClassificationsSelection()
-            throws ClientException {
-        DocumentModelList documents = resultsProvidersCache.get(
-                CURRENT_DOCUMENT_CLASSIFICATIONS_PROVIDER).getCurrentPage();
-        List<DocumentModel> selectedDocuments = documentsListsManager.getWorkingList(CURRENT_DOCUMENT_CLASSIFICATIONS_SELECTION);
-        return new SelectDataModelImpl(
-                CURRENT_DOCUMENT_CLASSIFICATIONS_SELECTION, documents,
-                selectedDocuments);
-    }
-
     /**
      * Returns classification form for selected documents
      * 
@@ -571,10 +483,19 @@ public class ClassificationActionsBean implements ClassificationActions {
      */
     public String showCurrentSelectionClassificationForm(String currentViewId)
             throws ClientException {
-        // invalidate provider: it'll rebuild selection for classification list
-        // and selection
-        resultsProvidersCache.invalidate(CURRENT_SELECTION_FOR_CLASSIFICATION_PROVIDER);
         currentSelectionViewId = currentViewId;
+
+        ContentView contentView = contentViewActions.getContentView("MASS_CLASSIFICATION_REQUEST");
+        contentView.resetPageProvider();
+
+        DocumentModelListPageProvider pageProvider = (DocumentModelListPageProvider) contentView.getPageProvider();
+        documentsListsManager.resetWorkingList("CURRENT_SELECTION_FOR_CLASSIFICATION");
+
+        pageProvider.add(documentsListsManager.getWorkingList("CURRENT_SELECTION"));
+        documentsListsManager.getWorkingList(
+                "CURRENT_SELECTION_FOR_CLASSIFICATION").addAll(
+                pageProvider.getCurrentPage());
+
         return CURRENT_SELECTION_FOR_CLASSIFICATION_PAGE;
     }
 
@@ -591,27 +512,14 @@ public class ClassificationActionsBean implements ClassificationActions {
         // navigate to current document default view
         DocumentModel currentDoc = navigationContext.getCurrentDocument();
         if (currentDoc != null) {
-            navigationContext.navigateToDocument(currentDoc);
+            return navigationContext.navigateToDocument(currentDoc);
         }
+
         // default: do not move
         return null;
     }
 
-    /**
-     * Returns select data model for selected documents from previous documents
-     * selection.
-     */
-    @Factory(value = "currentSelectionEmailsSelection", scope = EVENT)
-    public SelectDataModel getCurrentSelectionEmailsSelection()
-            throws ClientException {
-        List<DocumentModel> docs = resultsProvidersCache.get(
-                CURRENT_SELECTION_FOR_CLASSIFICATION_PROVIDER).getCurrentPage();
-        List<DocumentModel> selectedDocuments = documentsListsManager.getWorkingList(CURRENT_SELECTION_FOR_CLASSIFICATION);
-        return new SelectDataModelImpl(CURRENT_SELECTION_FOR_CLASSIFICATION,
-                docs, selectedDocuments);
-    }
-
-    public boolean canUnclassifyFromCurrentSelection() {
+    public boolean getCanUnclassifyFromCurrentSelection() {
         return !documentsListsManager.isWorkingListEmpty(CURRENT_DOCUMENT_CLASSIFICATIONS_SELECTION);
     }
 
@@ -627,65 +535,6 @@ public class ClassificationActionsBean implements ClassificationActions {
             resetCurrentDocumentClassifications();
         } else {
             log.debug("No documents selection in context to process unclassify on...");
-        }
-    }
-
-    protected void notifyEvent(CoreSession coreSession, String eventId,
-            DocumentModel source, String category, String comment,
-            String author, Map<String, Serializable> options)
-            throws ClientException {
-
-        // Default category
-        if (category == null) {
-            category = DocumentEventCategories.EVENT_DOCUMENT_CATEGORY;
-        }
-
-        if (options == null) {
-            options = new HashMap<String, Serializable>();
-        }
-
-        // Name of the current repository
-        options.put(CoreEventConstants.REPOSITORY_NAME,
-                coreSession.getRepositoryName());
-
-        // Document life cycle
-        if (source != null) {
-            String currentLifeCycleState = null;
-            try {
-                currentLifeCycleState = source.getCurrentLifeCycleState();
-            } catch (ClientException err) {
-                // FIXME no lifecycle -- this shouldn't generated an
-                // exception (and ClientException logs the spurious error)
-            }
-            options.put(CoreEventConstants.DOC_LIFE_CYCLE,
-                    currentLifeCycleState);
-        }
-        // Add the session ID
-        options.put(CoreEventConstants.SESSION_ID, coreSession.getSessionId());
-
-        Principal principal;
-        if (author != null) {
-            // make fake principal for logs
-            principal = new UserPrincipal(author);
-        } else {
-            principal = coreSession.getPrincipal();
-        }
-
-        DocumentEventContext ctx = new DocumentEventContext(coreSession,
-                principal, source);
-        ctx.setCategory(category);
-        ctx.setComment(comment);
-        ctx.setProperties(options);
-        Event event = ctx.newEvent(eventId);
-
-        try {
-            EventProducer evtProducer = Framework.getService(EventProducer.class);
-            log.debug("Notify RepositoryEventListener listeners list for event="
-                    + eventId);
-            evtProducer.fireEvent(event);
-        } catch (Exception e) {
-            log.error("Impossible to notify core events ! "
-                    + "EventProducer service is missing...");
         }
     }
 
@@ -737,24 +586,6 @@ public class ClassificationActionsBean implements ClassificationActions {
                     messages.get("feedback.unclassification.requestDone"));
         }
         return false;
-    }
-
-    // XXX AT: copy/pasted
-
-    public static final String DOCUMENTS_PAGE_SIZE_PROPERTY_NAME = "classification.documents.pageSize";
-
-    public static int getDocumentBatchSize() {
-        int pageSize = 20;
-        // try to set it using properties
-        String propsBatchSize = Framework.getProperty(DOCUMENTS_PAGE_SIZE_PROPERTY_NAME);
-        if (propsBatchSize != null && propsBatchSize.length() > 0) {
-            pageSize = Integer.parseInt(propsBatchSize);
-        } else {
-            log.debug(String.format("Property '%s' not set: "
-                    + "using default page size for documents providers",
-                    DOCUMENTS_PAGE_SIZE_PROPERTY_NAME));
-        }
-        return pageSize;
     }
 
 }

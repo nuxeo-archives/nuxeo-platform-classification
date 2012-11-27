@@ -33,8 +33,7 @@ import org.nuxeo.ecm.platform.ui.web.pagination.ResultsProviderFarmUserException
 import org.nuxeo.ecm.webapp.tree.DocumentTreeNode;
 
 // FIXME AT: this interface has been extracted automatically, must be reviewed.
-public interface ClassificationActions extends ResultsProviderFarm,
-        Serializable {
+public interface ClassificationActions extends Serializable {
 
     String EVENT_CLASSIFICATION_TREE_CHANGED = "classificationTreeChanged";
 
@@ -132,17 +131,7 @@ public interface ClassificationActions extends ResultsProviderFarm,
 
     void resetCurrentDocumentClassifications();
 
-    PagedDocumentsProvider getResultsProvider(String name,
-            SortInfo sortInfo) throws ClientException,
-            ResultsProviderFarmUserException;
-
-    PagedDocumentsProvider getResultsProvider(String name)
-            throws ClientException, ResultsProviderFarmUserException;
-
     DocumentModelList getCurrentDocumentClassifications()
-            throws ClientException;
-
-    SelectDataModel getCurrentDocumentClassificationsSelection()
             throws ClientException;
 
     /**
@@ -155,13 +144,6 @@ public interface ClassificationActions extends ResultsProviderFarm,
             throws ClientException;
 
     String cancelCurrentSelectionClassificationForm()
-            throws ClientException;
-
-    /**
-     * Returns select data model for selected documents from previous documents
-     * selection.
-     */
-    SelectDataModel getCurrentSelectionEmailsSelection()
             throws ClientException;
 
     void unclassify() throws ClientException;
