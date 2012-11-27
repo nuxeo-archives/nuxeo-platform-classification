@@ -56,6 +56,13 @@
       </filter>
     </action>
 
+    <action id="unclassify_selection"
+            link="#{classificationActions.unclassify()}"
+            label="label.classification.unclassify">
+      <category>CURRENT_DOCUMENT_CLASSIFICATIONS</category>
+      <filter-id>canUnclassifyFromCurrentSelection</filter-id>
+    </action>
+
     <action id="CURRENT_SELECTION_CLASSIFICATION"
       link="#{classificationActions.showCurrentSelectionClassificationForm(facesContext.viewRoot.viewId)}"
       label="action.classificationRequest">
@@ -86,6 +93,14 @@
       <rule grant="true">
         <condition>
           #{classificationActions.canClassifyFromCurrentSelection}
+        </condition>
+      </rule>
+    </filter>
+
+    <filter id="canUnclassifyFromCurrentSelection">
+      <rule grant="true">
+        <condition>
+          #{classificationActions.canUnclassifyFromCurrentSelection}
         </condition>
       </rule>
     </filter>

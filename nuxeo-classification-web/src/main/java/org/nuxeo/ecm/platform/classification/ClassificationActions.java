@@ -50,6 +50,8 @@ public interface ClassificationActions extends ResultsProviderFarm,
 
     String CURRENT_SELECTION_FOR_CLASSIFICATION_PAGE = "current_selection_classification_request";
 
+    String CLASSIFICATION_DOCUMENTS_CONTENT_VIEW = "CLASSIFIED_DOCUMENTS";
+
     String TREE_PLUGIN_NAME = "classification";
 
     boolean getCanClassifyFromCurrentSelection() throws ClientException;

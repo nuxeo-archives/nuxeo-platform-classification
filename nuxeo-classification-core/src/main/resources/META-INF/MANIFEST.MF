@@ -4,7 +4,6 @@ Bundle-Name: Nuxeo classification core
 Bundle-SymbolicName: org.nuxeo.ecm.platform.classification.core;singleton=true
 Bundle-Version: 1.0.0
 Bundle-Vendor: Nuxeo
-Require-Bundle: org.nuxeo.ecm.platform.classification.api
 Bundle-Category: stateful
 Nuxeo-Component: OSGI-INF/classification-core-types-contrib.xml,
  OSGI-INF/classification-security-contrib.xml,

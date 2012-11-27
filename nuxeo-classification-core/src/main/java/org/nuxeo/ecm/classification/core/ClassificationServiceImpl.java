@@ -176,7 +176,7 @@ public class ClassificationServiceImpl extends DefaultComponent implements
 
         if (!session.hasPermission(classificationFolder.getRef(), CLASSIFY)) {
             throw new DocumentSecurityException(
-                    "Not enough rights to classify doc");
+                    "Not enough rights to unclassify on document " + classificationFolder.getPathAsString());
         }
 
         Classification classification = classificationFolder.getAdapter(Classification.class);

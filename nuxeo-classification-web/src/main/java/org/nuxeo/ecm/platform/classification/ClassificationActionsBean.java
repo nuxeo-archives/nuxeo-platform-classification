@@ -66,6 +66,7 @@ import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventProducer;
 import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
 import org.nuxeo.ecm.platform.audit.api.AuditEventTypes;
+import org.nuxeo.ecm.platform.contentview.seam.ContentViewActions;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.platform.ui.web.model.SelectDataModel;
 import org.nuxeo.ecm.platform.ui.web.model.impl.SelectDataModelImpl;
@@ -116,6 +117,9 @@ public class ClassificationActionsBean implements ClassificationActions {
 
     @In(create = true)
     protected transient DocumentsListsManager documentsListsManager;
+
+    @In(create = true)
+    protected transient ContentViewActions contentViewActions;
 
     @In(create = true)
     protected TypesTool typesTool;
@@ -482,6 +486,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         currentDocumentClassifications = null;
         resultsProvidersCache.invalidate(CURRENT_DOCUMENT_CLASSIFICATIONS_PROVIDER);
         documentsListsManager.resetWorkingList(CURRENT_DOCUMENT_CLASSIFICATIONS_SELECTION);
+        contentViewActions.refresh(CLASSIFICATION_DOCUMENTS_CONTENT_VIEW);
     }
 
     public PagedDocumentsProvider getResultsProvider(String name,
@@ -604,6 +609,10 @@ public class ClassificationActionsBean implements ClassificationActions {
         List<DocumentModel> selectedDocuments = documentsListsManager.getWorkingList(CURRENT_SELECTION_FOR_CLASSIFICATION);
         return new SelectDataModelImpl(CURRENT_SELECTION_FOR_CLASSIFICATION,
                 docs, selectedDocuments);
+    }
+
+    public boolean canUnclassifyFromCurrentSelection() {
+        return !documentsListsManager.isWorkingListEmpty(CURRENT_DOCUMENT_CLASSIFICATIONS_SELECTION);
     }
 
     public void unclassify() throws ClientException {

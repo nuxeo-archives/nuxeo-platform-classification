@@ -32,6 +32,7 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.Filter;
 import org.nuxeo.ecm.core.api.Sorter;
+import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
 import org.nuxeo.ecm.core.api.security.SecurityConstants;
 import org.nuxeo.ecm.webapp.tree.DocumentTreeNodeImpl;
 
@@ -71,8 +72,11 @@ public class ClassificationTreeNode extends DocumentTreeNodeImpl {
 
             // add classified files as children, respecting PLE-252 (folders
             // first) as classified files are never folderish
-            DocumentModelList classifChildren = document.getAdapter(
-                    Classification.class).getClassifiedDocuments();
+            Classification adapter = document.getAdapter(Classification.class);
+            DocumentModelList classifChildren = new DocumentModelListImpl();
+            if (adapter != null) {
+                classifChildren = adapter.getClassifiedDocuments();
+            }
 
             // sort according to original sorter
             Collections.sort(classifChildren, sorter);
