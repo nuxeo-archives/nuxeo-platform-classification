@@ -19,6 +19,13 @@
       <isSession>false</isSession>
     </documentsList>
 
+    <documentsList name="CURRENT_SELECTION_FOR_UNCLASSIFICATION">
+      <events>
+        <event>folderishDocumentSelectionChanged</event>
+      </events>
+      <isSession>false</isSession>
+    </documentsList>
+
   </extension>
 
 </component>

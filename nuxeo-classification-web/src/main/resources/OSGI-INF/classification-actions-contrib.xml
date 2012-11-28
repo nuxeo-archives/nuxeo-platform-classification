@@ -53,6 +53,13 @@
       <filter-id>canUnclassifyFromCurrentSelection</filter-id>
     </action>
 
+    <action id="unclassify_selection_from_document"
+            link="#{classificationActions.unclassifyCurrentDocument()}"
+            label="label.classification.unclassify">
+      <category>CURRENT_DOCUMENT_UNCLASSIFICATIONS</category>
+      <filter-id>canUnclassifyFromCurrentDocument</filter-id>
+    </action>
+
     <action id="CURRENT_SELECTION_CLASSIFICATION"
       link="#{classificationActions.showCurrentSelectionClassificationForm(facesContext.viewRoot.viewId)}"
       label="action.classificationRequest">
@@ -68,6 +75,11 @@
       <filter-id>is_not_classification_container</filter-id>
     </action>
 
+    <action id="TAB_CLASSIFICATION" link="/classification/classification_tab.xhtml"
+            enabled="true" order="50" label="action.classificationRequest">
+      <category>VIEW_ACTION_LIST</category>
+      <filter-id>canClassifyCurrentDocument</filter-id>
+    </action>
   </extension>
 
   <extension target="org.nuxeo.ecm.platform.actions.ActionService"
@@ -76,6 +88,17 @@
     <filter id="is_not_classification_folder">
       <rule grant="false">
         <type>ClassificationFolder</type>
+      </rule>
+    </filter>
+
+    <filter id="canClassifyCurrentDocument">
+      <rule grant="false">
+        <facet>Classifiable</facet>
+      </rule>
+      <rule grant="true">
+        <condition>
+          #{classificationActions.canClassifyCurrentDocument}
+        </condition>
       </rule>
     </filter>
 
@@ -95,15 +118,21 @@
       </rule>
     </filter>
 
+    <filter id="canUnclassifyFromCurrentDocument">
+      <rule grant="true">
+        <condition>
+          #{classificationActions.canUnclassifyFromCurrentDocument}
+        </condition>
+      </rule>
+    </filter>
+
     <filter id="create_classification">
       <rule grant="true">
         <permission>AddChildren</permission>
         <type>Classification</type>
         <type>ClassificationRoot</type>
         <condition>
-          #{typeManager.getAllowedSubTypes(document.getType(),
-          document).size()
-          > 0}
+          #{typeManager.getAllowedSubTypes(document.getType(), document).size() > 0}
         </condition>
       </rule>
     </filter>

@@ -4,6 +4,54 @@
   <extension target="org.nuxeo.ecm.platform.ui.web.ContentViewService"
              point="contentViews">
 
+    <contentView name="CLASSIFIED_INTO">
+
+      <title>label.classification.currentClassifications</title>
+      <translateTitle>true</translateTitle>
+      <showTitle>false</showTitle>
+
+      <coreQueryPageProvider>
+        <property name="coreSession">#{documentManager}</property>
+        <pattern>
+          SELECT *
+          FROM Document
+          WHERE ecm:isProxy = 0
+          AND ecm:mixinType = 'Classifiable'
+          AND ecm:isCheckedInVersion = 0
+          AND ecm:currentLifeCycleState != 'deleted'
+          AND classification:targets = ?
+        </pattern>
+        <parameter>#{currentDocument.id}</parameter>
+        <pageSize>20</pageSize>
+        <sort column="dc:created" ascending="true"/>
+      </coreQueryPageProvider>
+
+      <selectionList>CURRENT_SELECTION_FOR_UNCLASSIFICATION</selectionList>
+      <showPageSizeSelector>true</showPageSizeSelector>
+      <useGlobalPageSize>true</useGlobalPageSize>
+      <refresh>
+        <event>documentChanged</event>
+        <event>documentCreated</event>
+      </refresh>
+      <cacheSize>20</cacheSize>
+      <cacheKey>#{currentDocument.id}</cacheKey>
+
+      <actions category="CURRENT_DOCUMENT_UNCLASSIFICATIONS"/>
+
+      <resultLayouts>
+        <layout name="document_listing_ajax" title="document_listing"
+                translateTitle="true" iconPath="/icons/document_listing_icon.png"
+                showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
+        <layout name="document_listing_ajax_compact_2_columns" title="document_listing_compact_2_columns"
+                translateTitle="true" iconPath="/icons/document_listing_compact_2_columns_icon.png"
+                showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
+        <layout name="document_listing_ajax_icon_2_columns" title="document_listing_icon_2_columns"
+                translateTitle="true" iconPath="/icons/document_listing_icon_2_columns_icon.png"
+                showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
+      </resultLayouts>
+
+    </contentView>
+
     <contentView name="CLASSIFIED_DOCUMENTS">
 
       <title>label.classification.currentClassifications</title>

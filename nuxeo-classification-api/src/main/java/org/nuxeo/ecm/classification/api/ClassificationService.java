@@ -39,7 +39,7 @@ public interface ClassificationService {
     }
 
     enum UNCLASSIFY_STATE {
-        NOT_CLASSIFIED, UNCLASSIFIED
+        NOT_CLASSIFIED, UNCLASSIFIED, NOT_ENOUGH_RIGHTS
     }
 
     /**
@@ -73,7 +73,7 @@ public interface ClassificationService {
 
     /**
      * Try to classify targets document into the classificationFolder. Method
-     * return a map containing references to classified documents, already
+     * return an object containing references to classified documents, already
      * classified documents or invalid documents. Lists are not initialized
      * until there is at least one corresponding documents.
      * 
@@ -87,9 +87,9 @@ public interface ClassificationService {
 
     /**
      * Try to unclassify targets document into the classificationFolder. Method
-     * return a map containing references to classified documents, already
-     * classified documents or invalid documents. Lists are not initialized
-     * until there is at least one corresponding documents.
+     * return an object containing references to unclassified documents and not
+     * classified. Lists are not initialized until there is at least one
+     * corresponding documents.
      * 
      * @since 5.7
      * @param classificationFolder expected classification folder
@@ -97,5 +97,18 @@ public interface ClassificationService {
      */
     ClassificationResult<UNCLASSIFY_STATE> unClassify(
             DocumentModel classificationFolder, Collection<String> targetDocs)
+            throws ClientException;
+
+    /**
+     * Try to unclassify targetId from classificationFolders. Method return an
+     * object containing references to unclassified documents and not
+     * classified. Lists are not initialized until there is at least one
+     * corresponding documents.
+     * 
+     * @since 5.7
+     * @param targetId whanted to be unclassified from specific container
+     */
+    ClassificationResult<UNCLASSIFY_STATE> unClassifyFrom(
+            Collection<DocumentModel> classificationFolders, String targetId)
             throws ClientException;
 }

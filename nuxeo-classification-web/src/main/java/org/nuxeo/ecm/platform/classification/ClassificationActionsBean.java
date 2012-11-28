@@ -55,6 +55,8 @@ import java.util.*;
 import static org.jboss.seam.ScopeType.EVENT;
 import static org.jboss.seam.international.StatusMessage.Severity.*;
 import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.NOT_CLASSIFIED;
+import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.NOT_ENOUGH_RIGHTS;
+import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.UNCLASSIFIED;
 import static org.nuxeo.ecm.platform.query.nxql.CoreQueryDocumentPageProvider.CORE_SESSION_PROPERTY;
 
 /**
@@ -131,6 +133,11 @@ public class ClassificationActionsBean implements ClassificationActions {
         return filtered;
     }
 
+    public boolean getCanClassifyCurrentDocument() throws ClientException {
+        return Framework.getLocalService(ClassificationService.class).isClassifiable(
+                navigationContext.getCurrentDocument());
+    }
+
     public boolean getCanClassifyFromCurrentSelection() throws ClientException {
         List<DocumentModel> classifiable = getFilteredSelectedDocumentsForClassification();
         return !classifiable.isEmpty();
@@ -160,6 +167,17 @@ public class ClassificationActionsBean implements ClassificationActions {
         } else {
             log.debug("No documents selection in context to process classification on");
             return null;
+        }
+    }
+
+    public void simpleClassify(ClassificationTreeNode node)
+            throws ClientException {
+        if (node != null) {
+            Collection<DocumentModel> targetDocs = Arrays.asList(navigationContext.getCurrentDocument());
+
+            classify(targetDocs, node.getDocument());
+            // refresh tree
+            node.resetChildren();
         }
     }
 
@@ -235,6 +253,8 @@ public class ClassificationActionsBean implements ClassificationActions {
             facesMessages.add(INFO,
                     messages.get("feedback.classification.requestDone"));
         }
+
+        resetCurrentDocumentClassifications();
         return false;
     }
 
@@ -461,7 +481,10 @@ public class ClassificationActionsBean implements ClassificationActions {
     public void resetCurrentDocumentClassifications() {
         currentDocumentClassifications = null;
         documentsListsManager.resetWorkingList(CURRENT_DOCUMENT_CLASSIFICATIONS_SELECTION);
+        documentsListsManager.resetWorkingList(CURRENT_SELECTION_FOR_UNCLASSIFICATION);
         contentViewActions.refresh(CLASSIFICATION_DOCUMENTS_CONTENT_VIEW);
+        contentViewActions.refresh(CURRENT_SELECTION_FOR_UNCLASSIFICATION);
+        contentViewActions.refresh(CLASSIFIED_INTO);
     }
 
     @Factory(value = "currentDocumentClassifications", scope = EVENT)
@@ -524,6 +547,10 @@ public class ClassificationActionsBean implements ClassificationActions {
         return !documentsListsManager.isWorkingListEmpty(CURRENT_DOCUMENT_CLASSIFICATIONS_SELECTION);
     }
 
+    public boolean getCanUnclassifyFromCurrentDocument() {
+        return !documentsListsManager.isWorkingListEmpty(CURRENT_SELECTION_FOR_UNCLASSIFICATION);
+    }
+
     public void unclassify() throws ClientException {
         if (!documentsListsManager.isWorkingListEmpty(CURRENT_DOCUMENT_CLASSIFICATIONS_SELECTION)) {
             List<DocumentModel> toDel = documentsListsManager.getWorkingList(CURRENT_DOCUMENT_CLASSIFICATIONS_SELECTION);
@@ -535,7 +562,38 @@ public class ClassificationActionsBean implements ClassificationActions {
             unclassify(targetDocIds, currentDocument);
             resetCurrentDocumentClassifications();
         } else {
-            log.debug("No documents selection in context to process unclassify on...");
+            log.warn("No documents selection in context to process unclassify on...");
+        }
+    }
+
+    public void unclassifyCurrentDocument() throws ClientException {
+        if (!documentsListsManager.isWorkingListEmpty(CURRENT_SELECTION_FOR_UNCLASSIFICATION)) {
+            List<DocumentModel> toDel = documentsListsManager.getWorkingList(CURRENT_SELECTION_FOR_UNCLASSIFICATION);
+            ClassificationResult<ClassificationService.UNCLASSIFY_STATE> classificationResult = Framework.getLocalService(
+                    ClassificationService.class).unClassifyFrom(toDel,
+                    navigationContext.getCurrentDocument().getId());
+
+            Events.instance().raiseEvent(AuditEventTypes.HISTORY_CHANGED);
+            resetCurrentDocumentClassifications();
+
+            if (classificationResult.contains(NOT_CLASSIFIED)) {
+                facesMessages.add(
+                        WARN,
+                        messages.get("feedback.unclassification.noDocumentsToUnclassify"));
+                return;
+            }
+
+            if (classificationResult.contains(NOT_ENOUGH_RIGHTS)) {
+                facesMessages.add(WARN,
+                        messages.get("feedback.unclassification.unauthorized"));
+                return;
+            }
+
+            facesMessages.add(INFO,
+                    messages.get("feedback.unclassification.requestDone"));
+
+        } else {
+            log.warn("No documents selection in context to process unclassify on current document.");
         }
     }
 

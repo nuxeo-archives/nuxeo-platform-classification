@@ -47,6 +47,7 @@ import static org.nuxeo.ecm.classification.api.ClassificationConstants.CLASSIFY;
 import static org.nuxeo.ecm.classification.api.ClassificationConstants.EVENT_CLASSIFICATION_DONE;
 import static org.nuxeo.ecm.classification.api.ClassificationService.CLASSIFY_STATE.*;
 import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.NOT_CLASSIFIED;
+import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.NOT_ENOUGH_RIGHTS;
 import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.UNCLASSIFIED;
 
 public class ClassificationServiceImpl extends DefaultComponent implements
@@ -174,7 +175,8 @@ public class ClassificationServiceImpl extends DefaultComponent implements
 
         if (!session.hasPermission(classificationFolder.getRef(), CLASSIFY)) {
             throw new DocumentSecurityException(
-                    "Not enough rights to unclassify on document " + classificationFolder.getPathAsString());
+                    "Not enough rights to unclassify on document "
+                            + classificationFolder.getPathAsString());
         }
 
         Classification classification = classificationFolder.getAdapter(Classification.class);
@@ -206,6 +208,42 @@ public class ClassificationServiceImpl extends DefaultComponent implements
         }
 
         session.saveDocument(classification.getDocument());
+
+        return result;
+    }
+
+    @Override
+    public ClassificationResult<UNCLASSIFY_STATE> unClassifyFrom(
+            Collection<DocumentModel> classificationFolders, String targetId)
+            throws ClientException {
+        ClassificationResult<UNCLASSIFY_STATE> result = new ClassificationResult<UNCLASSIFY_STATE>();
+        if (classificationFolders == null || classificationFolders.isEmpty()) {
+            throw new ClientException("Empty classification folders list");
+        }
+
+        CoreSession session = ((DocumentModel) classificationFolders.toArray()[0]).getCoreSession();
+        Principal principal = session.getPrincipal();
+
+        for (DocumentModel folder : classificationFolders) {
+            if (!session.hasPermission(principal, folder.getRef(), CLASSIFY)) {
+                result.add(NOT_ENOUGH_RIGHTS, folder.getId());
+                continue;
+            }
+
+            Classification adapter = folder.getAdapter(Classification.class);
+            if (adapter == null) {
+                result.add(NOT_CLASSIFIED, folder.getId());
+                continue;
+            }
+
+            if (!adapter.contains(targetId)) {
+                result.add(NOT_CLASSIFIED, folder.getId());
+                continue;
+            }
+
+            adapter.remove(targetId);
+            session.saveDocument(adapter.getDocument());
+        }
 
         return result;
     }

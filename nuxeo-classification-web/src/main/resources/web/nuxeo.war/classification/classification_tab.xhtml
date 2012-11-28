@@ -1,0 +1,45 @@
+<a4j:region xmlns:h="http://java.sun.com/jsf/html"
+            xmlns:f="http://java.sun.com/jsf/core"
+            xmlns:c="http://java.sun.com/jstl/core"
+            xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
+            xmlns:nxd="http://nuxeo.org/nxweb/document"
+            xmlns:nxh="http://nuxeo.org/nxweb/html"
+            xmlns:ui="http://java.sun.com/jsf/facelets"
+            xmlns:nxu="http://nuxeo.org/nxweb/util"
+            xmlns:rich="http://richfaces.org/rich" xmlns:a4f="https://ajax4jsf.dev.java.net/ajax"
+            id="classification_message">
+
+  <h3>#{messages['label.classification.currentDoucment.classifications']}</h3>
+
+  <nxu:set var="contentViewName" value="CLASSIFIED_INTO">
+    <ui:decorate template="/incl/content_view.xhtml"/>
+  </nxu:set>
+
+  <h:outputText value="#{messages['label.classification.tree']}" />
+
+  <h:selectOneListbox styleClass="dataInputText" size="1"
+                      value="#{currentEditableClassificationRootId}"
+                      valueChangeListener="#{classificationActions.editableClassificationRootSelected}">
+    <nxu:selectItems value="#{editableClassificationRoots}"
+                     var="editableRoot"
+                     itemValue="#{editableRoot.id}"
+                     itemLabel="#{editableRoot.dublincore.title}" />
+    <a4j:support event="onchange" reRender="editableClassificationTree"
+                 ignoreDupResponses="true" bypassUpdates="true" />
+  </h:selectOneListbox>
+
+  <h:form>
+    <ui:decorate template="/classification/editable_classification_tree_explorer.xhtml">
+      <ui:param name="classificationTree" value="#{currentEditableClassificationTree}" />
+      <ui:define name="classification_command">
+        <h:commandLink immediate="true"
+                         action="#{classificationActions.simpleClassify(node)}"
+                         reRender="classification_message"
+                         ignoreDupResponses="true" bypassUpdates="true">
+          <h:outputText value="#{messages['label.classification.classifyHere']}" />
+        </h:commandLink>
+      </ui:define>
+    </ui:decorate>
+  </h:form>
+
+</a4j:region>
