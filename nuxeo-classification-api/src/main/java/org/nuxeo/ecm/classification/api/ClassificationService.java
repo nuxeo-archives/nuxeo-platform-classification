@@ -92,7 +92,6 @@ public interface ClassificationService {
      * until there is at least one corresponding documents.
      * 
      * @since 5.7
-     * 
      * @param classificationFolder expected classification folder
      * @param targetDocs documents id wanted to be unclassified
      */

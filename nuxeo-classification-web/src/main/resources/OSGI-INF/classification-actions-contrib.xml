@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <component name="org.nuxeo.ecm.classification.web.actions">
+  <require>org.nuxeo.ecm.platform.actions</require>
 
   <extension target="org.nuxeo.ecm.platform.actions.ActionService"
     point="actions">
 
-    <!-- disable to use default create document form -->
+    <action id="newDocument_classification"
+            link="javascript:Richfaces.showModalPanel('selectDocTypePanel');" label="action.new.document"
+            icon="/icons/action_add.gif">
+      <category>SUBVIEW_UPPER_LIST_HREF</category>
+      <filter-id>create_classification</filter-id>
+    </action>
+
     <action id="newClassificationRoot"
       link="#{documentActions.createDocument('ClassificationRoot')}"
-      enabled="false" label="command.createClassificationRoot"
+      enabled="true" label="command.createClassificationRoot"
       icon="/icons/action_add_file.gif">
       <category>SUBVIEW_UPPER_LIST</category>
       <filter id="newClassificationRoot">
         <rule grant="true">
+          <type>WorkspaceRoot</type>
+          <type>Domain</type>
           <permission>AddChildren</permission>
           <facet>Folderish</facet>
         </rule>
@@ -83,6 +91,19 @@
       <rule grant="true">
         <condition>
           #{classificationActions.canUnclassifyFromCurrentSelection}
+        </condition>
+      </rule>
+    </filter>
+
+    <filter id="create_classification">
+      <rule grant="true">
+        <permission>AddChildren</permission>
+        <type>Classification</type>
+        <type>ClassificationRoot</type>
+        <condition>
+          #{typeManager.getAllowedSubTypes(document.getType(),
+          document).size()
+          > 0}
         </condition>
       </rule>
     </filter>

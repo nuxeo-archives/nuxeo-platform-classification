@@ -7,6 +7,12 @@ import org.nuxeo.ecm.platform.query.api.AbstractPageProvider;
 
 import java.util.List;
 
+/**
+ * Page Provider using for classified documents module inside the
+ * currentDocument property. Do not handle paging right now.
+ * 
+ * @since 5.7
+ */
 public class ClassifiedPageProvider extends AbstractPageProvider<DocumentModel> {
     @Override
     public List<DocumentModel> getCurrentPage() {

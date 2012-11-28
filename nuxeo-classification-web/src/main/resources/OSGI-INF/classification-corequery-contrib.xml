@@ -6,7 +6,7 @@
 
     <coreQueryPageProvider name="CLASSIFICATION_ROOTS">
       <pattern>
-        SELECT * FROM ClassificationRoot WHERE ecm:currentLifeCycleState != 'deleted'
+        SELECT * FROM Document WHERE ecm:mixinType = 'Classifiable' and ecm:currentLifeCycleState != 'deleted'
       </pattern>
       <sort column="dc:title" ascending="true"/>
     </coreQueryPageProvider>

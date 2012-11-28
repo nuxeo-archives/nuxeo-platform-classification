@@ -488,11 +488,11 @@ public class ClassificationActionsBean implements ClassificationActions {
 
         ContentView contentView = contentViewActions.getContentView("MASS_CLASSIFICATION_REQUEST");
         contentView.resetPageProvider();
-
-        DocumentModelListPageProvider pageProvider = (DocumentModelListPageProvider) contentView.getPageProvider();
         documentsListsManager.resetWorkingList("CURRENT_SELECTION_FOR_CLASSIFICATION");
 
-        pageProvider.add(documentsListsManager.getWorkingList("CURRENT_SELECTION"));
+        DocumentModelListPageProvider pageProvider = (DocumentModelListPageProvider) contentView.getPageProvider();
+        pageProvider.setDocumentModelList(documentsListsManager.getWorkingList("CURRENT_SELECTION"));
+
         documentsListsManager.getWorkingList(
                 "CURRENT_SELECTION_FOR_CLASSIFICATION").addAll(
                 pageProvider.getCurrentPage());

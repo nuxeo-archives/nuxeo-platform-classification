@@ -2,10 +2,17 @@ package org.nuxeo.ecm.classification.api;
 
 import java.util.*;
 
+/**
+ * Classification Result to know how each document is classified.
+ * 
+ * @param <T> Expected enumeration
+ * @since 5.7
+ */
 public class ClassificationResult<T extends Enum> {
     Map<T, Set<String>> results = new HashMap<T, Set<String>>();
 
-    public ClassificationResult() { }
+    public ClassificationResult() {
+    }
 
     public void add(T key, String value) {
         getValues(key).add(value);

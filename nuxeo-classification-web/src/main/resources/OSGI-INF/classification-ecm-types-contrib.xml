@@ -3,6 +3,18 @@
 
   <extension target="org.nuxeo.ecm.platform.types.TypeService" point="types">
 
+    <type id="Workspace">
+      <subtypes>
+        <type>ClassificationRoot</type>
+      </subtypes>
+    </type>
+
+    <type id="Folder">
+      <subtypes>
+        <type>ClassificationRoot</type>
+      </subtypes>
+    </type>
+
     <type id="ClassificationRoot">
       <label>ClassificationRoot</label>
       <icon>/icons/plan_classement_root.gif</icon>
