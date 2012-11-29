@@ -5,9 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.classification.api.ClassificationService;
-import org.nuxeo.ecm.core.api.ClientException;
-import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
 import org.nuxeo.ecm.core.test.annotations.BackendType;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
@@ -23,6 +21,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 import static org.nuxeo.ecm.classification.FakerClassificationResolver.FAKE_ID;
+import static org.nuxeo.ecm.core.api.VersioningOption.MAJOR;
 
 @RunWith(FeaturesRunner.class)
 @Features(PlatformFeature.class)
@@ -105,6 +104,29 @@ public class ClassificationTest {
         assertEquals(1, classifiedDocumentIds.size());
         assertFalse(classifiedDocumentIds.contains(FAKE_ID));
         assertTrue(classifiedDocumentIds.contains(child2.getId()));
+    }
+
+    @Test
+    public void testLastVersionResolver() throws ClientException {
+        classif.add("lastVersion", child1.getId());
+        session.saveDocument(classif.getDocument());
+
+        child1.checkIn(MAJOR, null);
+        child1.setPropertyValue("dc:description", "title");
+        child1 = session.saveDocument(child1);
+
+        child1.checkIn(MAJOR, null);
+        child1.setPropertyValue("dc:description", "title2");
+        child1 = session.saveDocument(child1);
+
+        DocumentRef lastVersion = child1.checkIn(MAJOR, null);
+
+        refreshAll();
+
+        assertEquals(1, classif.getClassifiedDocuments().size());
+        DocumentModel doc = classif.getClassifiedDocuments().get(0);
+
+        assertEquals(session.getDocument(lastVersion), doc);
     }
 
     protected void refreshAll() throws ClientException {
