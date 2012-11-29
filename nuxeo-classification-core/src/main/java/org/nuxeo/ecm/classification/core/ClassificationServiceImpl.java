@@ -26,6 +26,7 @@ import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.classification.api.ClassificationConstants;
+import org.nuxeo.ecm.classification.api.ClassificationResolver;
 import org.nuxeo.ecm.classification.api.ClassificationResult;
 import org.nuxeo.ecm.classification.api.ClassificationService;
 import org.nuxeo.ecm.classification.api.adapter.Classification;
@@ -56,6 +57,10 @@ public class ClassificationServiceImpl extends DefaultComponent implements
 
     public static final String TYPES_XP = "types";
 
+    public static final String RESOLVER_XP = "resolvers";
+
+    protected Map<String, ClassificationResolver> resolvers = new HashMap<String, ClassificationResolver>();
+
     private static final Log log = LogFactory.getLog(ClassificationServiceImpl.class);
 
     private static List<String> typeList;
@@ -83,9 +88,33 @@ public class ClassificationServiceImpl extends DefaultComponent implements
                     typeList.remove(typeName);
                 }
             }
+        } else if (RESOLVER_XP.equals(extensionPoint)) {
+            ClassificationResolverDescriptor desc = (ClassificationResolverDescriptor) contribution;
+            resolvers.put(desc.getName(), desc.getResolverInstance());
         } else {
             log.error("Extension point " + extensionPoint + "is unknown");
         }
+    }
+
+    @Override
+    public String resolveClassification(CoreSession session, final String name,
+            final String targetDocId) throws ClientException {
+        if (!resolvers.containsKey(name)) {
+            log.warn("reference to a missing resolver (" + name
+                    + "); returning the original doc id");
+            return targetDocId;
+        }
+
+        final String[] realTargetDocId = new String[1];
+        new UnrestrictedSessionRunner(session) {
+            @Override
+            public void run() throws ClientException {
+                realTargetDocId[0] = resolvers.get(name).resolve(session,
+                        targetDocId);
+            }
+        }.runUnrestricted();
+
+        return realTargetDocId[0];
     }
 
     public List<String> getClassifiableDocumentTypes() {
@@ -111,6 +140,25 @@ public class ClassificationServiceImpl extends DefaultComponent implements
     public boolean isClassifiable(DocumentModel doc) {
         return doc.hasFacet(ClassificationConstants.CLASSIFIABLE_FACET)
                 || typeList.contains(doc.getType());
+    }
+
+    @Override
+    public ClassificationResult<CLASSIFY_STATE> classify(
+            DocumentModel classificationFolder, String resolver,
+            Collection<DocumentModel> targetDocs) throws ClientException {
+        ClassificationResult<CLASSIFY_STATE> classify = classify(
+                classificationFolder, targetDocs);
+        Classification adapter = classificationFolder.getAdapter(Classification.class);
+
+        for (String docId : classify.get(CLASSIFIED)) {
+            adapter.add(resolver, docId);
+        }
+
+        for (String docId : classify.get(ALREADY_CLASSIFIED)) {
+            adapter.add(resolver, docId);
+        }
+
+        return classify;
     }
 
     @Override

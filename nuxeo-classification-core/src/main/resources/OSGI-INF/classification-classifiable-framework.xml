@@ -36,4 +36,32 @@
     <object class="org.nuxeo.ecm.classification.core.ClassificationDescriptor" />
   </extension-point>
 
+  <extension-point name="resolvers">
+    <documentation>
+      Resolvers extension point for the Classification service.
+
+      Contribute new classification resolver to allow custom classified docId resolution.
+      Contributed class should implements org.nuxeo.ecm.classification.api.ClassificationResolver.
+
+      Example of a classification registration:
+
+      <code>
+        <extension
+            target="org.nuxeo.ecm.classification.core.ClassificationService"
+            point="resolvers">
+          <resolver name="lastVersion" class="org.nuxeo.ecm.classification.api.ClassificationResolver" />
+
+        </extension>
+      </code>
+
+      <ul>
+        <li>name: resolver name</li>
+        <li>class: resolver class</li>
+      </ul>
+
+
+    </documentation>
+    <object class="org.nuxeo.ecm.classification.core.ClassificationResolverDescriptor" />
+  </extension-point>
+
 </component>

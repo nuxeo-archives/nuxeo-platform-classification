@@ -1,18 +1,24 @@
 package org.nuxeo.ecm.classification.api.adapter;
 
+import org.apache.commons.lang.StringUtils;
+import org.nuxeo.ecm.classification.api.ClassificationService;
 import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
+import org.nuxeo.runtime.api.Framework;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.nuxeo.ecm.classification.api.ClassificationConstants.CLASSIFICATION_TARGETS_PROPERTY_NAME;
+import static org.nuxeo.ecm.classification.api.ClassificationConstants.CLASSIFICATION_RESOLVERS_PROPERTY_NAME;
 import static org.nuxeo.ecm.core.api.security.SecurityConstants.READ;
 
 /**
  * Classification Adapter
- *
+ * 
  * @since 5.7
  * @author akervern
  */
@@ -27,17 +33,17 @@ public class Classification {
      * Returns resolved classified documents using given session.
      * <p>
      * Classified documents are kept on a specific property in the container.
-     *
+     * 
      * @throws org.nuxeo.ecm.core.api.ClientException
      */
-    public DocumentModelList getClassifiedDocuments()
-            throws ClientException {
+    public DocumentModelList getClassifiedDocuments() throws ClientException {
         DocumentModelList targets = new DocumentModelListImpl();
         CoreSession session = getCoreSession();
 
         for (String docId : getClassifiedDocumentIds()) {
             DocumentRef documentRef = new IdRef(docId);
-            if (session.exists(documentRef) && session.hasPermission(documentRef, READ)) {
+            if (session.exists(documentRef)
+                    && session.hasPermission(documentRef, READ)) {
                 targets.add(session.getDocument(documentRef));
             }
         }
@@ -51,7 +57,7 @@ public class Classification {
                 (Serializable) documents);
     }
 
-    public List<String> getClassifiedDocumentIds() throws ClientException {
+    protected List<String> getTargetsPropertyValue() throws ClientException {
         List<String> classified = (List<String>) document.getPropertyValue(CLASSIFICATION_TARGETS_PROPERTY_NAME);
         if (classified == null) {
             classified = new ArrayList<String>();
@@ -60,25 +66,105 @@ public class Classification {
         return classified;
     }
 
+    public List<String> getClassifiedDocumentIds() throws ClientException {
+        List<String> classified = getTargetsPropertyValue();
+
+        ClassificationService service = Framework.getLocalService(ClassificationService.class);
+        List<String> classifiedResolved = new ArrayList<String>();
+        for (String docId : classified) {
+            String resolver = getResolver(docId);
+            if (!StringUtils.isEmpty(resolver)) {
+
+                String resolved = service.resolveClassification(
+                        getCoreSession(), resolver, docId);
+                classifiedResolved.add(resolved);
+            } else {
+                classifiedResolved.add(docId);
+            }
+        }
+
+        return classifiedResolved;
+    }
+
     public void add(DocumentModel doc) throws ClientException {
         add(doc.getId());
     }
 
+    public void add(String resolver, String docId) throws ClientException {
+        add(docId);
+
+        removeResolver(docId);
+
+        List<Map<String, String>> classifiedDocument = getResolversDocuments();
+
+        Map<String, String> entry = new HashMap<String, String>();
+        entry.put("target", docId);
+        entry.put("resolver", resolver);
+        classifiedDocument.add(entry);
+
+        document.setPropertyValue(CLASSIFICATION_RESOLVERS_PROPERTY_NAME,
+                (Serializable) classifiedDocument);
+    }
+
+    protected List<Map<String, String>> getResolversDocuments()
+            throws ClientException {
+        List<Map<String, String>> value = (List<Map<String, String>>) document.getPropertyValue(CLASSIFICATION_RESOLVERS_PROPERTY_NAME);
+        if (value == null) {
+            value = new ArrayList<Map<String, String>>();
+        }
+
+        return value;
+    }
+
+    protected String getResolver(String docId) throws ClientException {
+        List<Map<String, String>> classifiedDocument = getResolversDocuments();
+        for (Map<String, String> resolver : classifiedDocument) {
+            if (docId.equals(resolver.get("target"))) {
+                return resolver.get("resolver");
+            }
+        }
+
+        return null;
+    }
+
+    protected boolean removeResolver(String docId) throws ClientException {
+        List<Map<String, String>> classifiedDocument = getResolversDocuments();
+
+        // remove existing resolver for docId
+        for (int i = 0; i < classifiedDocument.size(); i++) {
+            Map<String, String> storedResolver = classifiedDocument.get(i);
+            if (docId.equals(storedResolver.get("target"))) {
+                classifiedDocument.remove(i);
+                document.setPropertyValue(
+                        CLASSIFICATION_RESOLVERS_PROPERTY_NAME,
+                        (Serializable) classifiedDocument);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void add(String docId) throws ClientException {
-        List<String> classifiedDocument = getClassifiedDocumentIds();
+        List<String> classifiedDocument = getTargetsPropertyValue();
         classifiedDocument.add(docId);
 
         setClassifiedDocumentIds(classifiedDocument);
     }
 
     public boolean remove(DocumentModel doc) throws ClientException {
-        return getClassifiedDocumentIds().remove(doc.getId());
+        return remove(doc.getId());
     }
 
     public boolean remove(String docId) throws ClientException {
-        List<String> classifiedDocument = getClassifiedDocumentIds();
+        List<String> classifiedDocument = getTargetsPropertyValue();
         boolean removed = classifiedDocument.remove(docId);
         setClassifiedDocumentIds(classifiedDocument);
+
+        if (removed) {
+            removeResolver(docId);
+        }
+
         return removed;
     }
 
@@ -97,7 +183,8 @@ public class Classification {
     protected CoreSession getCoreSession() throws ClientException {
         CoreSession session = document.getCoreSession();
         if (session == null) {
-            throw new ClientException("Trying to resolve classified document with an offline document");
+            throw new ClientException(
+                    "Trying to resolve classified document with an offline document");
         }
         return session;
     }

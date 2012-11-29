@@ -37,6 +37,8 @@ public class ClassificationConstants {
 
     public static final String CLASSIFICATION_TARGETS_PROPERTY_NAME = "classification:targets";
 
+    public static final String CLASSIFICATION_RESOLVERS_PROPERTY_NAME = "classification:resolvers";
+
     public static final String EVENT_CLASSIFICATION_DONE = "ClassificationDone";
 
     public static final String EVENT_UNCLASSIFICATION_DONE = "UnclassificationDone";

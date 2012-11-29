@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentRef;
 
@@ -86,6 +87,15 @@ public interface ClassificationService {
             Collection<DocumentModel> targetDocs) throws ClientException;
 
     /**
+     * Classify a list of documents associated them a resolver to perform complex resolution.
+     *
+     * @since 5.7
+     */
+    ClassificationResult<CLASSIFY_STATE> classify(
+            DocumentModel classificationFolder, String resolver,
+            Collection<DocumentModel> targetDocs) throws ClientException;
+
+    /**
      * Try to unclassify targets document into the classificationFolder. Method
      * return an object containing references to unclassified documents and not
      * classified. Lists are not initialized until there is at least one
@@ -111,4 +121,14 @@ public interface ClassificationService {
     ClassificationResult<UNCLASSIFY_STATE> unClassifyFrom(
             Collection<DocumentModel> classificationFolders, String targetId)
             throws ClientException;
+
+    /**
+     * Resolve the expected document id using the resolver contributed as name.
+     * Resolution is made with an Unrestricted session to prevent from document
+     * rights problem.
+     * 
+     * @since 5.7
+     */
+    String resolveClassification(CoreSession session, String name,
+            String targetDocId) throws ClientException;
 }

@@ -12,8 +12,22 @@
     </xs:sequence>
   </xs:complexType>
 
+  <xs:complexType name="resolvers">
+    <xs:sequence>
+      <xs:element name="item" type="nclxs:resolver" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="resolver">
+    <xs:sequence>
+      <xs:element name="resolver" type="xs:string" />
+      <xs:element name="target" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+
   <!-- references to classified docs -->
   <xs:element name="targets" type="nclxs:stringList" />
+  <xs:element name="resolvers" type="nclxs:resolvers" />
 
 </xs:schema>
 
