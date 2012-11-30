@@ -111,6 +111,8 @@ public class ClassificationTest {
         classif.addResolver("lastVersion", child1.getId());
         session.saveDocument(classif.getDocument());
 
+
+
         child1.checkIn(MAJOR, null);
         child1.setPropertyValue("dc:description", "title");
         child1 = session.saveDocument(child1);
