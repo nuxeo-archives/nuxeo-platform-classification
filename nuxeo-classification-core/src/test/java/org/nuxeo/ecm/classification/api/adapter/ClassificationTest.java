@@ -64,7 +64,7 @@ public class ClassificationTest {
 
     @Test
     public void testAdapterResolvers() throws ClientException {
-        classif.addResolver("default", child1.getId());
+        classif.add("default", child1.getId());
         session.saveDocument(classif.getDocument());
 
         refreshAll();
@@ -83,7 +83,7 @@ public class ClassificationTest {
         assertEquals(FAKE_ID,
                 cs.resolveClassification(session, "fake", "something"));
 
-        classif.addResolver("fake", child1.getId());
+        classif.add("fake", child1.getId());
         classif.add(child2.getId());
         session.saveDocument(classif.getDocument());
 
@@ -108,10 +108,13 @@ public class ClassificationTest {
 
     @Test
     public void testLastVersionResolver() throws ClientException {
-        classif.addResolver("lastVersion", child1.getId());
+        classif.add("lastVersion", child1.getId());
         session.saveDocument(classif.getDocument());
 
+        refreshAll();
 
+        assertEquals(1, classif.getClassifiedDocuments().size());
+        assertEquals(child1.getId(), classif.getClassifiedDocuments().get(0).getId());
 
         child1.checkIn(MAJOR, null);
         child1.setPropertyValue("dc:description", "title");

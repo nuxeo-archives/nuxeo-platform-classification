@@ -115,15 +115,15 @@ public class Classification {
     public void addResolver(String resolver, String docId) throws ClientException {
         removeResolver(docId);
 
-        List<Map<String, String>> classifiedDocument = getResolversDocuments();
+        List<Map<String, String>> resolvers = getResolversDocuments();
 
         Map<String, String> entry = new HashMap<String, String>();
         entry.put("target", docId);
         entry.put("resolver", resolver);
-        classifiedDocument.add(entry);
+        resolvers.add(entry);
 
         document.setPropertyValue(CLASSIFICATION_RESOLVERS_PROPERTY_NAME,
-                (Serializable) classifiedDocument);
+                (Serializable) resolvers);
     }
 
     protected List<Map<String, String>> getResolversDocuments()

@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.classification.api.ClassificationResolver;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;
 
 /**
@@ -37,7 +38,12 @@ public class LastVersionResolver implements ClassificationResolver {
     @Override
     public String resolve(CoreSession session, String docId) {
         try {
-            return session.getLastDocumentVersion(new IdRef(docId)).getId();
+            DocumentModel lastDocumentVersion = session.getLastDocumentVersion(new IdRef(docId));
+            if (lastDocumentVersion == null) {
+                log.info("Any version found, returning the docId");
+                return docId;
+            }
+            return lastDocumentVersion.getId();
         } catch (ClientException e) {
             log.warn("Unable to resolve lastVersion of document" + docId);
             log.info(e, e);
