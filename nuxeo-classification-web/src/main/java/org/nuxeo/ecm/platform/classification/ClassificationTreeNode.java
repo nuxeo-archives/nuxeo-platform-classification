@@ -70,7 +70,7 @@ public class ClassificationTreeNode extends DocumentTreeNodeImpl {
                         filter, sorter));
             }
 
-            // add classified files as children, respecting PLE-252 (folders
+            // addResolver classified files as children, respecting PLE-252 (folders
             // first) as classified files are never folderish
             Classification adapter = document.getAdapter(Classification.class);
             DocumentModelList classifChildren = new DocumentModelListImpl();

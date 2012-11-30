@@ -151,12 +151,14 @@ public class ClassificationServiceImpl extends DefaultComponent implements
         Classification adapter = classificationFolder.getAdapter(Classification.class);
 
         for (String docId : classify.get(CLASSIFIED)) {
-            adapter.add(resolver, docId);
+            adapter.addResolver(resolver, docId);
         }
 
         for (String docId : classify.get(ALREADY_CLASSIFIED)) {
-            adapter.add(resolver, docId);
+            adapter.addResolver(resolver, docId);
         }
+
+        classificationFolder.getCoreSession().saveDocument(adapter.getDocument());
 
         return classify;
     }

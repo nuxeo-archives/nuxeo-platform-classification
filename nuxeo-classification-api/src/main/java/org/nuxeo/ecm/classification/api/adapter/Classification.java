@@ -92,7 +92,10 @@ public class Classification {
 
     public void add(String resolver, String docId) throws ClientException {
         add(docId);
+        addResolver(resolver, docId);
+    }
 
+    public void addResolver(String resolver, String docId) throws ClientException {
         removeResolver(docId);
 
         List<Map<String, String>> classifiedDocument = getResolversDocuments();

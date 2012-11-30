@@ -11,4 +11,5 @@ Nuxeo-Component: OSGI-INF/classification-core-types-contrib.xml,
  OSGI-INF/classification-lifecycle-contrib.xml,
  OSGI-INF/classification-classifiable-contrib.xml,
  OSGI-INF/classification-adapter-contrib.xml,
+ OSGI-INF/classification-operations-contrib.xml,
  OSGI-INF/classification-classifiable-framework.xml

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.classification.operations" version="1.0">
+  <extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent"
+             point="operations">
+
+    <operation class="org.nuxeo.ecm.classification.core.operation.ClassifyOperation" />
+    <operation class="org.nuxeo.ecm.classification.core.operation.UnclassifyOperation" />
+
+  </extension>
+</component>

@@ -55,7 +55,7 @@ public interface ClassificationService {
 
     /**
      * If this type of document is classifiable. It is recommanded to use
-     * {@link #isClassifiable(DocumentModel)} and to add the facet Classifiable
+     * {@link #isClassifiable(DocumentModel)} and to addResolver the facet Classifiable
      * to the classifiable document instead of use the contribution.
      * 
      * @param docType
