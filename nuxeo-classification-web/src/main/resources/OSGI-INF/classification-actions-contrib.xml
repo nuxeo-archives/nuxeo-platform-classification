@@ -62,7 +62,7 @@
 
     <action id="CURRENT_SELECTION_CLASSIFICATION"
       link="#{classificationActions.showCurrentSelectionClassificationForm(facesContext.viewRoot.viewId)}"
-      label="action.classificationRequest">
+      label="action.classificationRequest" order="50">
       <category>CURRENT_SELECTION_LIST</category>
       <filter-id>canClassifyFromCurrentSelection</filter-id>
     </action>
@@ -92,9 +92,6 @@
     </filter>
 
     <filter id="canClassifyCurrentDocument">
-      <rule grant="false">
-        <facet>Classifiable</facet>
-      </rule>
       <rule grant="true">
         <condition>
           #{classificationActions.canClassifyCurrentDocument}
@@ -129,8 +126,7 @@
     <filter id="create_classification">
       <rule grant="true">
         <permission>AddChildren</permission>
-        <type>Classification</type>
-        <type>ClassificationRoot</type>
+        <facet>Classifier</facet>
         <condition>
           #{typeManager.getAllowedSubTypes(document.getType(), document).size() > 0}
         </condition>

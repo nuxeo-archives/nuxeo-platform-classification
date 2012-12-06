@@ -20,7 +20,11 @@
       <ui:decorate template="/classification/mass_classification_request_template.xhtml">
         <ui:define name="documents_to_classify">
           <nxu:set var="contentViewName" value="MASS_CLASSIFICATION_REQUEST">
-            <ui:decorate template="/incl/content_view.xhtml"/>
+            <ui:decorate template="/incl/content_view.xhtml">
+              <ui:param name="showCSVExport" value="false" />
+              <ui:param name="showPDFExport" value="false" />
+              <ui:param name="showSyndicationLinks" value="false" />
+            </ui:decorate>
           </nxu:set>
         </ui:define>
         <ui:define name="cancel_button">

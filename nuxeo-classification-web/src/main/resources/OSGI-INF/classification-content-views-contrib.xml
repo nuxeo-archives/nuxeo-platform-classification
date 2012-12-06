@@ -16,7 +16,6 @@
           SELECT *
           FROM Document
           WHERE ecm:isProxy = 0
-          AND ecm:mixinType = 'Classifiable'
           AND ecm:isCheckedInVersion = 0
           AND ecm:currentLifeCycleState != 'deleted'
           AND classification:targets = ?
@@ -27,8 +26,9 @@
       </coreQueryPageProvider>
 
       <selectionList>CURRENT_SELECTION_FOR_UNCLASSIFICATION</selectionList>
-      <showPageSizeSelector>true</showPageSizeSelector>
+      <showPageSizeSelector>false</showPageSizeSelector>
       <useGlobalPageSize>true</useGlobalPageSize>
+      <showFilterForm>false</showFilterForm>
       <refresh>
         <event>documentChanged</event>
         <event>documentCreated</event>
@@ -41,12 +41,6 @@
       <resultLayouts>
         <layout name="document_listing_ajax" title="document_listing"
                 translateTitle="true" iconPath="/icons/document_listing_icon.png"
-                showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
-        <layout name="document_listing_ajax_compact_2_columns" title="document_listing_compact_2_columns"
-                translateTitle="true" iconPath="/icons/document_listing_compact_2_columns_icon.png"
-                showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
-        <layout name="document_listing_ajax_icon_2_columns" title="document_listing_icon_2_columns"
-                translateTitle="true" iconPath="/icons/document_listing_icon_2_columns_icon.png"
                 showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
       </resultLayouts>
 
@@ -65,6 +59,7 @@
       <selectionList>CURRENT_DOCUMENT_CLASSIFICATIONS_SELECTION</selectionList>
       <showPageSizeSelector>false</showPageSizeSelector>
       <useGlobalPageSize>true</useGlobalPageSize>
+      <showFilterForm>false</showFilterForm>
       <refresh>
         <event>documentChanged</event>
         <event>documentCreated</event>
@@ -77,12 +72,6 @@
       <resultLayouts>
         <layout name="document_listing_ajax" title="document_listing"
                 translateTitle="true" iconPath="/icons/document_listing_icon.png"
-                showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
-        <layout name="document_listing_ajax_compact_2_columns" title="document_listing_compact_2_columns"
-                translateTitle="true" iconPath="/icons/document_listing_compact_2_columns_icon.png"
-                showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
-        <layout name="document_listing_ajax_icon_2_columns" title="document_listing_icon_2_columns"
-                translateTitle="true" iconPath="/icons/document_listing_icon_2_columns_icon.png"
                 showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
       </resultLayouts>
 
@@ -109,12 +98,6 @@
       <resultLayouts>
         <layout name="document_listing_ajax" title="document_listing"
                 translateTitle="true" iconPath="/icons/document_listing_icon.png"
-                showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
-        <layout name="document_listing_ajax_compact_2_columns" title="document_listing_compact_2_columns"
-                translateTitle="true" iconPath="/icons/document_listing_compact_2_columns_icon.png"
-                showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
-        <layout name="document_listing_ajax_icon_2_columns" title="document_listing_icon_2_columns"
-                translateTitle="true" iconPath="/icons/document_listing_icon_2_columns_icon.png"
                 showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
       </resultLayouts>
 
