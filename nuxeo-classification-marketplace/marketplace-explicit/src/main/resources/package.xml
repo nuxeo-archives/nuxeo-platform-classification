@@ -1,0 +1,28 @@
+<!-- See documentation at http://doc.nuxeo.com/x/HgIz -->
+<package type="addon" name="nuxeo-classification" version="@VERSION@">
+  <title>Nuxeo Shared Folder</title>
+  <description>
+    <p>This addon adds possibility to soft link documents inside shared folders.</p>
+  </description>
+  <home-page>http://doc.nuxeo.com/</home-page>
+  <vendor>Nuxeo</vendor>
+  <installer restart="true" />
+  <uninstaller restart="true" />
+  <nuxeo-validation>nuxeo_certified</nuxeo-validation>
+  <!-- <nuxeo-validation>inprocess</nuxeo-validation> -->
+  <!-- <nuxeo-validation>primary_validation</nuxeo-validation> -->
+  <!-- <nuxeo-validation>nuxeo_certified</nuxeo-validation> -->
+  <!-- <production-state>proto</production-state> -->
+  <production-state>testing</production-state>
+  <!-- <production-state>production_ready</production-state> -->
+  <supported>true</supported>
+  <platforms>
+    <platform>cap-@DISTRIB_VERSION@</platform>
+  </platforms>
+  <!-- Dependencies on other packages -->
+  <dependencies>
+    <package>nuxeo-dm:@DISTRIB_VERSION@:@DISTRIB_VERSION@</package>
+  </dependencies>
+  <license>LGPL</license>
+  <license-url>http://www.gnu.org/licenses/lgpl.html</license-url>
+</package>

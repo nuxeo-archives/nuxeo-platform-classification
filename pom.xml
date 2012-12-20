@@ -25,6 +25,10 @@
       <name>Anahide Tchertchian</name>
       <email>at@nuxeo.com</email>
     </developer>
+    <developer>
+      <name>Arnaud Kervern</name>
+      <email>ak@nuxeo.com</email>
+    </developer>
   </developers>
 
   <modules>
@@ -32,6 +36,15 @@
     <module>nuxeo-classification-core</module>
     <module>nuxeo-classification-web</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>marketplace</id>
+      <modules>
+        <module>nuxeo-classification-marketplace</module>
+      </modules>
+    </profile>
+  </profiles>
 
   <repositories>
     <repository>

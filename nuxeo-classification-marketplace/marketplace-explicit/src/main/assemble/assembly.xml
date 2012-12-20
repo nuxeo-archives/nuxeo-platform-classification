@@ -1,0 +1,36 @@
+<project name="nuxeo-assembly"
+         default="build"
+         xmlns:nx="urn:nuxeo-build"
+         xmlns:artifact="urn:nuxeo-artifact">
+  <taskdef resource="org/nuxeo/build/antlib.xml" uri="urn:nuxeo-build" />
+  <taskdef resource="org/nuxeo/build/artifact/antlib.xml"
+           uri="urn:nuxeo-artifact" />
+
+  <property name="outdir" value="${maven.project.build.directory}" />
+
+  <target name="build" description="Build Nuxeo sample Marketplace package">
+    <tstamp />
+    <delete failonerror="false" dir="${outdir}/marketplace" />
+    <mkdir dir="${outdir}/marketplace" />
+    <copy todir="${outdir}/marketplace">
+      <fileset dir="src/main/resources" />
+      <filterset>
+        <filter token="VERSION" value="${classification.marketplace.version}" />
+        <filter token="DISTRIB_VERSION" value="${nuxeo.version}" />
+      </filterset>
+    </copy>
+
+    <copy todir="${outdir}/marketplace/install/bundles">
+      <artifact:resolveFile key="org.nuxeo.ecm.platform:nuxeo-classification-api::jar" />
+      <artifact:resolveFile key="org.nuxeo.ecm.platform:nuxeo-classification-core::jar" />
+      <artifact:resolveFile key="org.nuxeo.ecm.platform:nuxeo-classification-web::jar" />
+    </copy>
+
+    <zip destfile="${outdir}/${maven.project.artifactId}-${classification.marketplace.version}.zip"
+         basedir="${outdir}/marketplace" />
+    <artifact:attach file="${outdir}/${maven.project.artifactId}-${classification.marketplace.version}.zip"
+                     target="${maven.project.groupId}:${maven.project.artifactId}"
+                     type="zip" />
+  </target>
+
+</project>
