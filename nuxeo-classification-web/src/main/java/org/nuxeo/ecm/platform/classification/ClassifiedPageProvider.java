@@ -2,9 +2,12 @@ package org.nuxeo.ecm.platform.classification;
 
 import org.nuxeo.ecm.classification.api.adapter.Classification;
 import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.platform.query.api.AbstractPageProvider;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -33,6 +36,12 @@ public class ClassifiedPageProvider extends AbstractPageProvider<DocumentModel> 
     }
 
     protected DocumentModel getCurrentDocument() {
-        return (DocumentModel) getProperties().get("currentDocument");
+        CoreSession coreSession = (CoreSession) getProperties().get("coreSession");
+        String docId = (String) getProperties().get("docId");
+        try {
+            return coreSession.getDocument(new IdRef(docId));
+        } catch (ClientException e) {
+            return null;
+        }
     }
 }

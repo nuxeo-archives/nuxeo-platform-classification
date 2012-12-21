@@ -462,6 +462,7 @@ public class ClassificationActionsBean implements ClassificationActions {
 
     @Observer(value = { EventNames.GO_HOME,
             EventNames.DOMAIN_SELECTION_CHANGED, EventNames.DOCUMENT_CHANGED,
+            EventNames.NAVIGATE_TO_DOCUMENT,
             EventNames.DOCUMENT_SECURITY_CHANGED,
             EventNames.DOCUMENT_CHILDREN_CHANGED }, create = false)
     public void resetClassificationData() {
@@ -591,7 +592,7 @@ public class ClassificationActionsBean implements ClassificationActions {
 
             facesMessages.add(INFO,
                     messages.get("feedback.unclassification.requestDone"));
-
+            resetCurrentDocumentClassifications();
         } else {
             log.warn("No documents selection in context to process unclassify on current document.");
         }
@@ -644,6 +645,7 @@ public class ClassificationActionsBean implements ClassificationActions {
             facesMessages.add(INFO,
                     messages.get("feedback.unclassification.requestDone"));
         }
+        resetCurrentDocumentClassifications();
         return false;
     }
 

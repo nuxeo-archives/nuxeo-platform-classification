@@ -29,10 +29,10 @@
       <showPageSizeSelector>false</showPageSizeSelector>
       <useGlobalPageSize>true</useGlobalPageSize>
       <showFilterForm>false</showFilterForm>
-      <refresh>
+      <reset>
         <event>documentChanged</event>
         <event>documentCreated</event>
-      </refresh>
+      </reset>
       <cacheSize>20</cacheSize>
       <cacheKey>#{currentDocument.id}</cacheKey>
 
@@ -53,17 +53,19 @@
       <showTitle>true</showTitle>
 
       <genericPageProvider class="org.nuxeo.ecm.platform.classification.ClassifiedPageProvider">
-        <property name="currentDocument">#{currentDocument}</property>
+        <property name="coreSession">#{documentManager}</property>
+        <property name="docId">#{currentDocument.id}</property>
       </genericPageProvider>
 
       <selectionList>CURRENT_DOCUMENT_CLASSIFICATIONS_SELECTION</selectionList>
       <showPageSizeSelector>false</showPageSizeSelector>
       <useGlobalPageSize>true</useGlobalPageSize>
       <showFilterForm>false</showFilterForm>
-      <refresh>
+      <reset>
         <event>documentChanged</event>
         <event>documentCreated</event>
-      </refresh>
+        <event>documentSelectionChanged</event>
+      </reset>
       <cacheSize>10</cacheSize>
       <cacheKey>#{currentDocument.id}</cacheKey>
 
@@ -88,10 +90,10 @@
       <selectionList>CURRENT_SELECTION_FOR_CLASSIFICATION</selectionList>
       <showPageSizeSelector>false</showPageSizeSelector>
       <useGlobalPageSize>true</useGlobalPageSize>
-      <refresh>
+      <reset>
         <event>documentChanged</event>
         <event>documentCreated</event>
-      </refresh>
+      </reset>
       <cacheSize>10</cacheSize>
       <cacheKey>#{currentDocument.id}</cacheKey>
 
