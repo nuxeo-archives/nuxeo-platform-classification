@@ -1,8 +1,8 @@
 <!-- See documentation at http://doc.nuxeo.com/x/HgIz -->
 <package type="addon" name="nuxeo-classification" version="@VERSION@">
-  <title>Nuxeo Shared Folder</title>
+  <title>Nuxeo Shared Bookmarks</title>
   <description>
-    <p>This addon adds possibility to soft link documents inside shared folders.</p>
+    <p>This addon adds possibility to bookmark documents inside folders.</p>
   </description>
   <home-page>http://doc.nuxeo.com/</home-page>
   <vendor>Nuxeo</vendor>
@@ -13,8 +13,8 @@
   <!-- <nuxeo-validation>primary_validation</nuxeo-validation> -->
   <!-- <nuxeo-validation>nuxeo_certified</nuxeo-validation> -->
   <!-- <production-state>proto</production-state> -->
-  <production-state>testing</production-state>
-  <!-- <production-state>production_ready</production-state> -->
+  <!-- <production-state>testing</production-state> -->
+  <production-state>production_ready</production-state>
   <supported>true</supported>
   <platforms>
     <platform>cap-@DISTRIB_VERSION@</platform>
