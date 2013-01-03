@@ -20,12 +20,12 @@
 
   <!-- Instruction for installing the MP to be tested -->
   <property name="mp.install"
-            value="file:${out.dir}/nuxeo-classification-marketplace-${classification.marketplace.version}.zip" />
+            value="file:${out.dir}/nuxeo-shared-bookmark-marketplace-${classification.marketplace.version}.zip" />
   <!-- Override default prepare-environment target to make it download your MP -->
   <target name="prepare-environment"
           depends="_init,prepare-db,prepare-tomcat,prepare-jboss">
     <copy todir="${out.dir}">
-      <artifact:resolveFile key="org.nuxeo.ecm.platform:nuxeo-classification-marketplace::zip" />
+      <artifact:resolveFile key="org.nuxeo.ecm.platform:nuxeo-shared-bookmark-marketplace::zip" />
     </copy>
   </target>
 
