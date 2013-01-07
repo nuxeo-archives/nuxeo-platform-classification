@@ -50,7 +50,7 @@
 
       <title>label.classification.currentClassifications</title>
       <translateTitle>true</translateTitle>
-      <showTitle>true</showTitle>
+      <showTitle>false</showTitle>
 
       <genericPageProvider class="org.nuxeo.ecm.platform.classification.ClassifiedPageProvider">
         <property name="coreSession">#{documentManager}</property>
