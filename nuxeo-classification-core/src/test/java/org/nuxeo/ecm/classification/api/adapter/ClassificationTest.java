@@ -1,11 +1,24 @@
 package org.nuxeo.ecm.classification.api.adapter;
 
-import com.google.inject.Inject;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.nuxeo.ecm.classification.FakerClassificationResolver.FAKE_ID;
+import static org.nuxeo.ecm.core.api.VersioningOption.MAJOR;
+
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.classification.api.ClassificationService;
-import org.nuxeo.ecm.core.api.*;
+import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentRef;
+import org.nuxeo.ecm.core.storage.sql.DatabaseHelper;
 import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
 import org.nuxeo.ecm.core.test.annotations.BackendType;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
@@ -16,12 +29,7 @@ import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 import org.nuxeo.runtime.test.runner.LocalDeploy;
 
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.*;
-import static org.nuxeo.ecm.classification.FakerClassificationResolver.FAKE_ID;
-import static org.nuxeo.ecm.core.api.VersioningOption.MAJOR;
+import com.google.inject.Inject;
 
 @RunWith(FeaturesRunner.class)
 @Features(PlatformFeature.class)
@@ -120,9 +128,13 @@ public class ClassificationTest {
         child1.setPropertyValue("dc:description", "title");
         child1 = session.saveDocument(child1);
 
+        DatabaseHelper.DATABASE.maybeSleepToNextSecond();
+
         child1.checkIn(MAJOR, null);
         child1.setPropertyValue("dc:description", "title2");
         child1 = session.saveDocument(child1);
+
+        DatabaseHelper.DATABASE.maybeSleepToNextSecond();
 
         DocumentRef lastVersion = child1.checkIn(MAJOR, null);
 
