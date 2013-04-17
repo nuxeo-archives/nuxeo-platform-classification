@@ -427,7 +427,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         Map<String, Serializable> props = new HashMap<String, Serializable>();
         props.put(CORE_SESSION_PROPERTY, (Serializable) documentManager);
         return (PageProvider<DocumentModel>) pps.getPageProvider(
-                pageProviderName, null, null, null, props, null);
+                pageProviderName, null, null, null, props, null, null);
     }
 
     @Factory(value = "editableClassificationRoots", scope = EVENT)
