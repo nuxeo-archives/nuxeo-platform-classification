@@ -19,11 +19,32 @@
 
 package org.nuxeo.ecm.platform.classification;
 
+import static org.jboss.seam.ScopeType.EVENT;
+import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
+import static org.jboss.seam.international.StatusMessage.Severity.INFO;
+import static org.jboss.seam.international.StatusMessage.Severity.WARN;
+import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.NOT_CLASSIFIED;
+import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.NOT_ENOUGH_RIGHTS;
+import static org.nuxeo.ecm.platform.query.nxql.CoreQueryDocumentPageProvider.CORE_SESSION_PROPERTY;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.faces.event.ValueChangeEvent;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.*;
+import org.jboss.seam.annotations.Factory;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Context;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
@@ -31,7 +52,13 @@ import org.nuxeo.ecm.classification.api.ClassificationConstants;
 import org.nuxeo.ecm.classification.api.ClassificationResult;
 import org.nuxeo.ecm.classification.api.ClassificationService;
 import org.nuxeo.ecm.classification.api.adapter.Classification;
-import org.nuxeo.ecm.core.api.*;
+import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.DocumentRef;
+import org.nuxeo.ecm.core.api.Filter;
+import org.nuxeo.ecm.core.api.Sorter;
 import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
 import org.nuxeo.ecm.platform.audit.api.AuditEventTypes;
 import org.nuxeo.ecm.platform.contentview.jsf.ContentView;
@@ -48,20 +75,9 @@ import org.nuxeo.ecm.webapp.tree.DocumentTreeNodeImpl;
 import org.nuxeo.ecm.webapp.tree.TreeManager;
 import org.nuxeo.runtime.api.Framework;
 
-import javax.faces.event.ValueChangeEvent;
-import java.io.Serializable;
-import java.util.*;
-
-import static org.jboss.seam.ScopeType.EVENT;
-import static org.jboss.seam.international.StatusMessage.Severity.*;
-import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.NOT_CLASSIFIED;
-import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.NOT_ENOUGH_RIGHTS;
-import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.UNCLASSIFIED;
-import static org.nuxeo.ecm.platform.query.nxql.CoreQueryDocumentPageProvider.CORE_SESSION_PROPERTY;
-
 /**
  * Handles classification actions
- * 
+ *
  * @author Anahide Tchertchian
  */
 @Name("classificationActions")
@@ -194,7 +210,7 @@ public class ClassificationActionsBean implements ClassificationActions {
 
     /**
      * Classifies given documents in given classification folder.
-     * 
+     *
      * @return true on error
      */
     @SuppressWarnings("unchecked")
@@ -427,7 +443,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         Map<String, Serializable> props = new HashMap<String, Serializable>();
         props.put(CORE_SESSION_PROPERTY, (Serializable) documentManager);
         return (PageProvider<DocumentModel>) pps.getPageProvider(
-                pageProviderName, null, null, null, props, null, null);
+                pageProviderName, null, null, null, props, null);
     }
 
     @Factory(value = "editableClassificationRoots", scope = EVENT)
@@ -502,9 +518,9 @@ public class ClassificationActionsBean implements ClassificationActions {
 
     /**
      * Returns classification form for selected documents
-     * 
-     * @param currentViewId the current view id, so that redirection can be done
-     *            correctly on cancel.
+     *
+     * @param currentViewId the current view id, so that redirection can be
+     *            done correctly on cancel.
      */
     public String showCurrentSelectionClassificationForm(String currentViewId)
             throws ClientException {
@@ -600,7 +616,7 @@ public class ClassificationActionsBean implements ClassificationActions {
 
     /**
      * Unclassifies given document ids in given classification folder.
-     * 
+     *
      * @return true on error
      */
     public boolean unclassify(Collection<String> targetDocIds,
