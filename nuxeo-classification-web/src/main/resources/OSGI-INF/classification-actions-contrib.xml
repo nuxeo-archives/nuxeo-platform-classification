@@ -76,7 +76,7 @@
     </action>
 
     <action id="TAB_CLASSIFICATION" link="/classification/classification_tab.xhtml"
-            enabled="true" order="50" label="action.classificationRequest">
+            enabled="true" order="50" label="action.classificationRequestTitle">
       <category>VIEW_ACTION_LIST</category>
       <filter-id>canClassifyCurrentDocument</filter-id>
     </action>
