@@ -25,11 +25,6 @@ import javax.faces.event.ValueChangeEvent;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
-import org.nuxeo.ecm.core.api.PagedDocumentsProvider;
-import org.nuxeo.ecm.core.api.SortInfo;
-import org.nuxeo.ecm.platform.ui.web.api.ResultsProviderFarm;
-import org.nuxeo.ecm.platform.ui.web.model.SelectDataModel;
-import org.nuxeo.ecm.platform.ui.web.pagination.ResultsProviderFarmUserException;
 import org.nuxeo.ecm.webapp.tree.DocumentTreeNode;
 
 // FIXME AT: this interface has been extracted automatically, must be reviewed.
@@ -66,8 +61,7 @@ public interface ClassificationActions extends Serializable {
      * envelope.
      * </p>
      */
-    Collection<DocumentModel> getTargetDocuments()
-            throws ClientException;
+    Collection<DocumentModel> getTargetDocuments() throws ClientException;
 
     /**
      * Returns selected target documents from a list of email documents.
@@ -81,10 +75,10 @@ public interface ClassificationActions extends Serializable {
     String classify(ClassificationTreeNode node) throws ClientException;
 
     /**
-     * Classifies a list of emails in given folder and redirect to current page.
+     * Classifies a list of emails in given folder and redirect to current
+     * page.
      */
-    String massClassify(ClassificationTreeNode node)
-            throws ClientException;
+    String massClassify(ClassificationTreeNode node) throws ClientException;
 
     /**
      * Classifies given documents in given classification folder.
@@ -108,25 +102,21 @@ public interface ClassificationActions extends Serializable {
 
     DocumentModel getCurrentClassificationRoot() throws ClientException;
 
-    String getCurrentEditableClassificationRootId()
-            throws ClientException;
+    String getCurrentEditableClassificationRootId() throws ClientException;
 
     void setCurrentEditableClassificationRootId(String newRootId)
             throws ClientException;
 
-    DocumentModel getCurrentEditableClassificationRoot()
-            throws ClientException;
+    DocumentModel getCurrentEditableClassificationRoot() throws ClientException;
 
-    DocumentTreeNode getCurrentClassificationTree()
-            throws ClientException;
+    DocumentTreeNode getCurrentClassificationTree() throws ClientException;
 
     DocumentTreeNode getCurrentEditableClassificationTree()
             throws ClientException;
 
     DocumentModelList getClassificationRoots() throws ClientException;
 
-    DocumentModelList getEditableClassificationRoots()
-            throws ClientException;
+    DocumentModelList getEditableClassificationRoots() throws ClientException;
 
     void editableClassificationRootSelected(ValueChangeEvent event)
             throws ClientException;
@@ -141,14 +131,13 @@ public interface ClassificationActions extends Serializable {
     /**
      * Returns classification form for selected documents
      *
-     * @param currentViewId the current view id, so that redirection can be done
-     *            correctly on cancel.
+     * @param currentViewId the current view id, so that redirection can be
+     *            done correctly on cancel.
      */
     String showCurrentSelectionClassificationForm(String currentViewId)
             throws ClientException;
 
-    String cancelCurrentSelectionClassificationForm()
-            throws ClientException;
+    String cancelCurrentSelectionClassificationForm() throws ClientException;
 
     void unclassify() throws ClientException;
 
