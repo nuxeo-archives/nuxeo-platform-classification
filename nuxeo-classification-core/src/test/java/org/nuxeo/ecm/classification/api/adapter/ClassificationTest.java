@@ -62,7 +62,7 @@ public class ClassificationTest {
         child1 = session.createDocument(child1);
 
         child2 = session.createDocumentModel("/", "file2", "File");
-        child2 = session.createDocument(child1);
+        child2 = session.createDocument(child2);
 
         classif = root.getAdapter(Classification.class);
         assertNotNull(classif);
