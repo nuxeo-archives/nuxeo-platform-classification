@@ -28,7 +28,7 @@
         <layout>heading</layout>
       </layouts>
       <contentViews category="content">
-        <contentView>CLASSIFIED_DOCUMENTS</contentView>
+        <contentView>document_bookmark</contentView>
         <contentView>document_content</contentView>
       </contentViews>
     </type>
@@ -46,7 +46,7 @@
         <layout>heading</layout>
       </layouts>
       <contentViews category="content">
-        <contentView>CLASSIFIED_DOCUMENTS</contentView>
+        <contentView>document_bookmark</contentView>
         <contentView>document_content</contentView>
       </contentViews>
     </type>

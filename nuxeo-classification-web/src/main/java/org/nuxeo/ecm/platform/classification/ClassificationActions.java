@@ -40,7 +40,7 @@ public interface ClassificationActions extends Serializable {
 
     String CURRENT_SELECTION_FOR_UNCLASSIFICATION = "CURRENT_SELECTION_FOR_UNCLASSIFICATION";
 
-    String CLASSIFIED_INTO = "CLASSIFIED_INTO";
+    String BOOKMARKED_INTO = "bookmarked_into";
 
     String CURRENT_SELECTION_FOR_CLASSIFICATION_PROVIDER = "CURRENT_SELECTION_FOR_CLASSIFICATION_PROVIDER";
 
@@ -48,7 +48,7 @@ public interface ClassificationActions extends Serializable {
 
     String CURRENT_SELECTION_FOR_CLASSIFICATION_PAGE = "current_selection_classification_request";
 
-    String CLASSIFICATION_DOCUMENTS_CONTENT_VIEW = "CLASSIFIED_DOCUMENTS";
+    String CLASSIFICATION_DOCUMENTS_CONTENT_VIEW = "document_bookmark";
 
     String TREE_PLUGIN_NAME = "classification";
 

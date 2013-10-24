@@ -4,7 +4,7 @@
   <extension target="org.nuxeo.ecm.platform.ui.web.ContentViewService"
              point="contentViews">
 
-    <contentView name="CLASSIFIED_INTO">
+    <contentView name="bookmarked_into">
 
       <title>label.classification.currentClassifications</title>
       <translateTitle>true</translateTitle>
@@ -46,7 +46,7 @@
 
     </contentView>
 
-    <contentView name="CLASSIFIED_DOCUMENTS">
+    <contentView name="document_bookmark">
 
       <title>label.classification.currentClassifications</title>
       <translateTitle>true</translateTitle>

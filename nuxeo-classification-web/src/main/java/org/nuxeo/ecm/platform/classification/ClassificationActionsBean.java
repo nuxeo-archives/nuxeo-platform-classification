@@ -501,7 +501,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         documentsListsManager.resetWorkingList(CURRENT_SELECTION_FOR_UNCLASSIFICATION);
         contentViewActions.refresh(CLASSIFICATION_DOCUMENTS_CONTENT_VIEW);
         contentViewActions.refresh(CURRENT_SELECTION_FOR_UNCLASSIFICATION);
-        contentViewActions.refresh(CLASSIFIED_INTO);
+        contentViewActions.refresh(BOOKMARKED_INTO);
     }
 
     @Factory(value = "currentDocumentClassifications", scope = EVENT)

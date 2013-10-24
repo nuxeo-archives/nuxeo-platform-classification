@@ -109,6 +109,8 @@
 
     <filter id="canUnclassifyFromCurrentSelection">
       <rule grant="true">
+        <permission>AddChildren</permission>
+        <facet>Classifier</facet>
         <condition>
           #{classificationActions.canUnclassifyFromCurrentSelection}
         </condition>
