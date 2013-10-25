@@ -88,7 +88,7 @@ public class ClassificationActionsBean implements ClassificationActions {
 
     private static final Log log = LogFactory.getLog(ClassificationActionsBean.class);
 
-    @In(create = true, required = false)
+    @In
     protected transient FacesMessages facesMessages;
 
     @In
@@ -594,9 +594,7 @@ public class ClassificationActionsBean implements ClassificationActions {
             resetCurrentDocumentClassifications();
 
             if (classificationResult.contains(NOT_CLASSIFIED)) {
-                facesMessages.add(
-                        WARN,
-                        messages.get("feedback.unclassification.noDocumentsToUnclassify"));
+                facesMessages.addFromResourceBundle(WARN, "feedback.unclassification.noDocumentsToUnclassify");
                 return;
             }
 

@@ -77,7 +77,7 @@ public class TestClassificationService {
         assertTrue(cs.isClassifiable("File"));
         assertTrue(cs.isClassifiable("Note"));
         assertTrue(cs.isClassifiable("Folder"));
-        assertEquals(3, cs.getClassifiableDocumentTypes().size());
+        assertEquals(6, cs.getClassifiableDocumentTypes().size());
     }
 
     @Test

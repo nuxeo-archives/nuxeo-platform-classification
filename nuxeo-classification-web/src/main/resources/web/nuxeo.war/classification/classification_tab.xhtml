@@ -7,7 +7,7 @@
             xmlns:ui="http://java.sun.com/jsf/facelets"
             xmlns:nxu="http://nuxeo.org/nxweb/util"
             xmlns:rich="http://richfaces.org/rich" xmlns:a4f="https://ajax4jsf.dev.java.net/ajax"
-            id="classification_message">
+            id="classification_tab">
 
 
   <h3><h:outputText value="#{messages['action.classificationRequestTitle']}" /></h3>
@@ -32,7 +32,7 @@
       <ui:define name="classification_command">
         <h:commandLink immediate="true"
                        action="#{classificationActions.simpleClassify(node)}"
-                       reRender="classification_message"
+                       reRender="classification_tab"
                        ignoreDupResponses="true" bypassUpdates="true">
           <h:outputText value="#{messages['label.classification.classifyHere']}"/>
         </h:commandLink>
