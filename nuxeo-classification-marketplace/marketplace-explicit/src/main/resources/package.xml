@@ -8,13 +8,13 @@
   <vendor>Nuxeo</vendor>
   <installer restart="true" />
   <uninstaller restart="true" />
-  <nuxeo-validation>nuxeo_certified</nuxeo-validation>
+  <nuxeo-validation>primary_validation</nuxeo-validation>
   <!-- <nuxeo-validation>inprocess</nuxeo-validation> -->
   <!-- <nuxeo-validation>primary_validation</nuxeo-validation> -->
   <!-- <nuxeo-validation>nuxeo_certified</nuxeo-validation> -->
   <!-- <production-state>proto</production-state> -->
   <!-- <production-state>testing</production-state> -->
-  <production-state>production_ready</production-state>
+  <production-state>testing</production-state>
   <supported>true</supported>
   <platforms>
     <platform>cap-@DISTRIB_VERSION@</platform>
