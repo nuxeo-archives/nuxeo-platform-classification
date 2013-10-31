@@ -36,15 +36,6 @@
     <module>nuxeo-classification-web</module>
   </modules>
 
-  <profiles>
-    <profile>
-      <id>marketplace</id>
-      <modules>
-        <module>nuxeo-classification-marketplace</module>
-      </modules>
-    </profile>
-  </profiles>
-
   <repositories>
     <repository>
       <id>public</id>
