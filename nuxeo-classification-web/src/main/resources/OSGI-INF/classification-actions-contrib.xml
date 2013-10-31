@@ -5,10 +5,12 @@
   <extension target="org.nuxeo.ecm.platform.actions.ActionService"
     point="actions">
 
-    <action id="newDocument_classification"
-            link="javascript:Richfaces.showModalPanel('selectDocTypePanel');" label="action.new.document"
-            icon="/icons/action_add.gif">
+    <action id="newDocument_classification" label="action.new.document" icon="/icons/action_add.gif"
+      type="fancybox">
       <category>SUBVIEW_UPPER_LIST_HREF</category>
+      <properties>
+        <property name="include">/select_document_type.xhtml</property>
+      </properties>
       <filter-id>create_classification</filter-id>
     </action>
 
