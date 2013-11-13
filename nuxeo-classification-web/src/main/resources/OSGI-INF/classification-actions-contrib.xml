@@ -5,8 +5,8 @@
   <extension target="org.nuxeo.ecm.platform.actions.ActionService"
     point="actions">
 
-    <action id="newDocument_classification" label="action.new.document" icon="/icons/action_add.gif"
-      type="fancybox">
+    <action id="newDocument_classification" label="action.new.document"
+      icon="/icons/action_add.gif" type="fancybox">
       <category>SUBVIEW_UPPER_LIST_HREF</category>
       <properties>
         <property name="include">/select_document_type.xhtml</property>
@@ -14,10 +14,8 @@
       <filter-id>create_classification</filter-id>
     </action>
 
-    <action id="newClassificationRoot"
-      link="#{documentActions.createDocument('ClassificationRoot')}"
-      enabled="true" label="command.createClassificationRoot"
-      icon="/icons/action_add_file.gif">
+    <action id="newClassificationRoot" link="#{documentActions.createDocument('ClassificationRoot')}"
+      enabled="true" label="command.createClassificationRoot" icon="/icons/action_add_file.gif">
       <category>SUBVIEW_UPPER_LIST</category>
       <filter id="newClassificationRoot">
         <rule grant="true">
@@ -31,9 +29,8 @@
 
     <!-- disable to use default create document form -->
     <action id="newClassificationFolder"
-      link="#{documentActions.createDocument('ClassificationFolder')}"
-      enabled="false" label="command.createClassificationFolder"
-      icon="/icons/action_add_file.gif">
+      link="#{documentActions.createDocument('ClassificationFolder')}" enabled="false"
+      label="command.createClassificationFolder" icon="/icons/action_add_file.gif">
       <category>SUBVIEW_UPPER_LIST</category>
       <filter id="newClassificationFolder">
         <rule grant="true">
@@ -48,16 +45,14 @@
       <filter-id>is_not_classification_folder</filter-id>
     </action>
 
-    <action id="unclassify_selection"
-            link="#{classificationActions.unclassify()}"
-            label="label.classification.unclassify">
+    <action id="unclassify_selection" link="#{classificationActions.unclassify()}"
+      label="label.classification.unclassify">
       <category>CURRENT_DOCUMENT_CLASSIFICATIONS</category>
       <filter-id>canUnclassifyFromCurrentSelection</filter-id>
     </action>
 
-    <action id="unclassify_selection_from_document"
-            link="#{classificationActions.unclassifyCurrentDocument()}"
-            label="label.classification.unclassify">
+    <action id="unclassify_selection_from_document" link="#{classificationActions.unclassifyCurrentDocument()}"
+      label="label.classification.unclassify">
       <category>CURRENT_DOCUMENT_UNCLASSIFICATIONS</category>
       <filter-id>canUnclassifyFromCurrentDocument</filter-id>
     </action>
@@ -78,7 +73,7 @@
     </action>
 
     <action id="TAB_CLASSIFICATION" link="/classification/classification_tab.xhtml"
-            enabled="true" order="50" label="action.classificationRequestTitle">
+      enabled="true" order="50" label="action.classificationRequestTitle" type="rest_document_link">
       <category>VIEW_ACTION_LIST</category>
       <filter-id>canClassifyCurrentDocument</filter-id>
     </action>
@@ -132,7 +127,8 @@
         <permission>AddChildren</permission>
         <facet>Classifier</facet>
         <condition>
-          #{typeManager.getAllowedSubTypes(document.getType(), document).size() > 0}
+          #{typeManager.getAllowedSubTypes(document.getType(),
+          document).size() > 0}
         </condition>
       </rule>
     </filter>
