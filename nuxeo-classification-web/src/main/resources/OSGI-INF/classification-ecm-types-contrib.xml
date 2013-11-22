@@ -18,7 +18,6 @@
     <type id="ClassificationRoot">
       <label>ClassificationRoot</label>
       <icon>/icons/classification_folder.png</icon>
-      <icon-expanded>/icons/classification_folder_open.png</icon-expanded>
       <bigIcon>/icons/classification_folder_100.png</bigIcon>
       <default-view>view_documents</default-view>
       <subtypes>
@@ -37,7 +36,6 @@
       <label>ClassificationFolder</label>
       <icon>/icons/folder.gif</icon>
       <bigIcon>/icons/folder_100.png</bigIcon>
-      <icon-expanded>/icons/folder_open.gif</icon-expanded>
       <default-view>view_documents</default-view>
       <subtypes>
         <type>ClassificationFolder</type>
