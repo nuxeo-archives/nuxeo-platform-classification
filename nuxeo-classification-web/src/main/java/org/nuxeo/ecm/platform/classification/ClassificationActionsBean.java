@@ -383,8 +383,8 @@ public class ClassificationActionsBean implements ClassificationActions {
                             e);
                 }
                 // standard tree node: no need to show classified documents
-                currentClassificationTree = new DocumentTreeNodeImpl(
-                        documentManager.getSessionId(), root, filter, sorter);
+                currentClassificationTree = new DocumentTreeNodeImpl(root,
+                        filter, sorter);
             }
         }
         return currentClassificationTree;

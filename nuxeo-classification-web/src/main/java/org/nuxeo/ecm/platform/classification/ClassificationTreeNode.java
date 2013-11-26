@@ -26,7 +26,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.classification.api.adapter.Classification;
 import org.nuxeo.ecm.core.api.ClientException;
-import org.nuxeo.ecm.core.api.CoreInstance;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
@@ -38,7 +37,7 @@ import org.nuxeo.ecm.webapp.tree.DocumentTreeNodeImpl;
 
 /**
  * Tree node taking care of classified documents within a document
- * 
+ *
  * @author Anahide Tchertchian
  */
 public class ClassificationTreeNode extends DocumentTreeNodeImpl {
@@ -57,8 +56,11 @@ public class ClassificationTreeNode extends DocumentTreeNodeImpl {
         try {
             // fetch usual children (sub folders and saved searches)
             children = new LinkedHashMap<Object, DocumentTreeNodeImpl>();
-            CoreSession session = CoreInstance.getInstance().getSession(
-                    sessionId);
+            CoreSession session = getCoreSession();
+            if (session == null) {
+                log.error("Cannot retrieve CoreSession for " + document);
+                return;
+            }
 
             // get and filter
             DocumentModelList coreChildren = session.getChildren(
