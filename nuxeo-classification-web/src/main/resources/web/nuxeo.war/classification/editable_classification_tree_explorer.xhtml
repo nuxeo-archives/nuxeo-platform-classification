@@ -23,7 +23,7 @@
           iconCollapsed="/icons/toggle_plus.png"
           rowKeyVar="rowKey"
           stateVar="nodeState">
-          <rich:recursiveTreeNodesAdaptor
+          <rich:treeModelRecursiveAdaptor
             roots="#{classificationTree}"
             nodes="#{node.children}"
             var="node">
@@ -40,7 +40,7 @@
                 <ui:insert name="classification_command" />
               </f:subview>
             </rich:treeNode>
-          </rich:recursiveTreeNodesAdaptor>
+          </rich:treeModelRecursiveAdaptor>
         </rich:tree>
 
       </h:panelGroup>
