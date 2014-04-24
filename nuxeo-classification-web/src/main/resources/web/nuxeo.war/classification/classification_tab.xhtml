@@ -34,7 +34,7 @@
       <ui:define name="classification_command">
         <h:commandLink immediate="true"
                        action="#{classificationActions.simpleClassify(node)}"
-                       reRender="classification_tab"
+                       render="classification_tab"
                        ignoreDupResponses="true" bypassUpdates="true">
           <h:outputText value="#{messages['label.classification.classifyHere']}"/>
         </h:commandLink>
