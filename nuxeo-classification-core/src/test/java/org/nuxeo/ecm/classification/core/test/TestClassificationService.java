@@ -38,7 +38,6 @@ import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
-import org.nuxeo.ecm.core.test.annotations.BackendType;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
 import org.nuxeo.ecm.platform.test.PlatformFeature;
@@ -49,11 +48,10 @@ import org.nuxeo.runtime.test.runner.LocalDeploy;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RunWith(FeaturesRunner.class)
 @Features(PlatformFeature.class)
-@RepositoryConfig(type = BackendType.H2, init = DefaultRepositoryInit.class, user = "Administrator", cleanup = Granularity.METHOD)
+@RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.METHOD)
 @Deploy({ "org.nuxeo.ecm.platform.classification.api",
         "org.nuxeo.ecm.platform.classification.core" })
 @LocalDeploy({ "org.nuxeo.ecm.platform.classification.core:OSGI-INF/classification-classifiable-types-test-contrib.xml" })
