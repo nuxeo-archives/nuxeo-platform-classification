@@ -34,7 +34,7 @@
         <event>documentCreated</event>
       </reset>
       <cacheSize>20</cacheSize>
-      <cacheKey>#{currentDocument.id}</cacheKey>
+      <cacheKey>#{currentDocument.repositoryName}_#{currentDocument.id}</cacheKey>
 
       <actions category="CURRENT_DOCUMENT_UNCLASSIFICATIONS"/>
 
@@ -67,7 +67,7 @@
         <event>documentSelectionChanged</event>
       </reset>
       <cacheSize>10</cacheSize>
-      <cacheKey>#{currentDocument.id}</cacheKey>
+      <cacheKey>#{currentDocument.repositoryName}_#{currentDocument.id}</cacheKey>
 
       <actions category="CURRENT_DOCUMENT_CLASSIFICATIONS"/>
 
@@ -95,7 +95,7 @@
         <event>documentCreated</event>
       </reset>
       <cacheSize>10</cacheSize>
-      <cacheKey>#{currentDocument.id}</cacheKey>
+      <cacheKey>#{currentDocument.repositoryName}_#{currentDocument.id}</cacheKey>
 
       <resultLayouts>
         <layout name="document_listing_ajax" title="document_listing"
