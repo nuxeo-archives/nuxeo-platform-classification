@@ -39,7 +39,7 @@
       <actions category="CURRENT_DOCUMENT_UNCLASSIFICATIONS"/>
 
       <resultLayouts>
-        <layout name="document_listing_ajax" title="document_listing"
+        <layout name="document_listing_table" title="document_listing"
                 translateTitle="true" iconPath="/icons/document_listing_icon.png"
                 showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
       </resultLayouts>
@@ -72,7 +72,7 @@
       <actions category="CURRENT_DOCUMENT_CLASSIFICATIONS"/>
 
       <resultLayouts>
-        <layout name="document_listing_ajax" title="document_listing"
+        <layout name="document_listing_table" title="document_listing"
                 translateTitle="true" iconPath="/icons/document_listing_icon.png"
                 showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
       </resultLayouts>
@@ -98,7 +98,7 @@
       <cacheKey>#{currentDocument.repositoryName}_#{currentDocument.id}</cacheKey>
 
       <resultLayouts>
-        <layout name="document_listing_ajax" title="document_listing"
+        <layout name="document_listing_table" title="document_listing"
                 translateTitle="true" iconPath="/icons/document_listing_icon.png"
                 showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
       </resultLayouts>
