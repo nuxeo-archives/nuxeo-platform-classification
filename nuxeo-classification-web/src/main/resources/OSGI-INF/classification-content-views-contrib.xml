@@ -40,8 +40,8 @@
 
       <resultLayouts>
         <layout name="document_listing_table" title="document_listing"
-                translateTitle="true" iconPath="/icons/document_listing_icon.png"
-                showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
+          translateTitle="true" iconPath="/icons/document_listing_icon.png"
+          showCSVExport="true" showSpreadsheet="true" showEditColumns="true" />
       </resultLayouts>
 
     </contentView>
@@ -73,8 +73,8 @@
 
       <resultLayouts>
         <layout name="document_listing_table" title="document_listing"
-                translateTitle="true" iconPath="/icons/document_listing_icon.png"
-                showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
+          translateTitle="true" iconPath="/icons/document_listing_icon.png"
+          showCSVExport="true" showSpreadsheet="true" showEditColumns="true" />
       </resultLayouts>
 
     </contentView>
@@ -99,8 +99,8 @@
 
       <resultLayouts>
         <layout name="document_listing_table" title="document_listing"
-                translateTitle="true" iconPath="/icons/document_listing_icon.png"
-                showCSVExport="true" showPDFExport="false" showSyndicationLinks="true" />
+          translateTitle="true" iconPath="/icons/document_listing_icon.png"
+          showCSVExport="true" showSpreadsheet="true" showEditColumns="true" />
       </resultLayouts>
 
     </contentView>
