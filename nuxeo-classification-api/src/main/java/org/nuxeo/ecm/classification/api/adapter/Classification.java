@@ -59,8 +59,7 @@ public class Classification {
 
         for (String docId : getClassifiedDocumentIds()) {
             DocumentRef documentRef = new IdRef(docId);
-            if (session.exists(documentRef)
-                    && session.hasPermission(documentRef, READ)) {
+            if (session.exists(documentRef) && session.hasPermission(documentRef, READ)) {
                 targets.add(session.getDocument(documentRef));
             }
         }
@@ -68,10 +67,8 @@ public class Classification {
         return targets;
     }
 
-    public void setClassifiedDocumentIds(List<String> documents)
-            throws ClientException {
-        document.setPropertyValue(CLASSIFICATION_TARGETS_PROPERTY_NAME,
-                (Serializable) documents);
+    public void setClassifiedDocumentIds(List<String> documents) throws ClientException {
+        document.setPropertyValue(CLASSIFICATION_TARGETS_PROPERTY_NAME, (Serializable) documents);
     }
 
     protected List<String> getTargetsPropertyValue() throws ClientException {
@@ -92,8 +89,7 @@ public class Classification {
             String resolver = getResolver(docId);
             if (!StringUtils.isEmpty(resolver)) {
 
-                String resolved = service.resolveClassification(
-                        getCoreSession(), resolver, docId);
+                String resolved = service.resolveClassification(getCoreSession(), resolver, docId);
                 classifiedResolved.add(resolved);
             } else {
                 classifiedResolved.add(docId);
@@ -122,12 +118,10 @@ public class Classification {
         entry.put("resolver", resolver);
         resolvers.add(entry);
 
-        document.setPropertyValue(CLASSIFICATION_RESOLVERS_PROPERTY_NAME,
-                (Serializable) resolvers);
+        document.setPropertyValue(CLASSIFICATION_RESOLVERS_PROPERTY_NAME, (Serializable) resolvers);
     }
 
-    protected List<Map<String, String>> getResolversDocuments()
-            throws ClientException {
+    protected List<Map<String, String>> getResolversDocuments() throws ClientException {
         List<Map<String, String>> value = (List<Map<String, String>>) document.getPropertyValue(CLASSIFICATION_RESOLVERS_PROPERTY_NAME);
         if (value == null) {
             value = new ArrayList<Map<String, String>>();
@@ -155,9 +149,7 @@ public class Classification {
             Map<String, String> storedResolver = classifiedDocument.get(i);
             if (docId.equals(storedResolver.get("target"))) {
                 classifiedDocument.remove(i);
-                document.setPropertyValue(
-                        CLASSIFICATION_RESOLVERS_PROPERTY_NAME,
-                        (Serializable) classifiedDocument);
+                document.setPropertyValue(CLASSIFICATION_RESOLVERS_PROPERTY_NAME, (Serializable) classifiedDocument);
                 return true;
             }
         }
@@ -203,8 +195,7 @@ public class Classification {
     protected CoreSession getCoreSession() throws ClientException {
         CoreSession session = document.getCoreSession();
         if (session == null) {
-            throw new ClientException(
-                    "Trying to resolve classified document with an offline document");
+            throw new ClientException("Trying to resolve classified document with an offline document");
         }
         return session;
     }

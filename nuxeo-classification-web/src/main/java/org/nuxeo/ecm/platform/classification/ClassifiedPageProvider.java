@@ -11,8 +11,8 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Page Provider using for classified documents module inside the
- * currentDocument property. Do not handle paging right now.
+ * Page Provider using for classified documents module inside the currentDocument property. Do not handle paging right
+ * now.
  * 
  * @since 5.7
  */

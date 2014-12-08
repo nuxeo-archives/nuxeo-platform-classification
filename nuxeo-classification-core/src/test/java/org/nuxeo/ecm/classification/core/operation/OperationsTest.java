@@ -31,8 +31,7 @@ import static org.nuxeo.ecm.classification.FakerClassificationResolver.FAKE_ID;
 @RunWith(FeaturesRunner.class)
 @Features(AutomationFeature.class)
 @RepositoryConfig(init = DefaultRepositoryInit.class)
-@Deploy({ "org.nuxeo.ecm.platform.classification.api",
-        "org.nuxeo.ecm.platform.classification.core" })
+@Deploy({ "org.nuxeo.ecm.platform.classification.api", "org.nuxeo.ecm.platform.classification.core" })
 @LocalDeploy({ "org.nuxeo.ecm.platform.classification.api:OSGI-INF/classification-resolver-contrib.xml" })
 public class OperationsTest {
 
@@ -53,8 +52,7 @@ public class OperationsTest {
 
     @Before
     public void beforeMethod() throws ClientException {
-        root = session.createDocumentModel("/default-domain/workspaces/test",
-                "classifRoot", "ClassificationRoot");
+        root = session.createDocumentModel("/default-domain/workspaces/test", "classifRoot", "ClassificationRoot");
         root = session.createDocument(root);
 
         child1 = session.createDocumentModel("/", "file1", "File");

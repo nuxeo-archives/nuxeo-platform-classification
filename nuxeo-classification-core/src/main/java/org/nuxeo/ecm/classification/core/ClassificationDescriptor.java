@@ -24,10 +24,8 @@ import java.io.Serializable;
 import org.nuxeo.common.xmap.annotation.XNode;
 import org.nuxeo.common.xmap.annotation.XObject;
 
-
 /**
  * @author <a href="mailto:ldoguin@nuxeo.com">Laurent Doguin</a>
- *
  */
 @XObject("classifiable")
 public class ClassificationDescriptor implements Serializable {
@@ -40,7 +38,7 @@ public class ClassificationDescriptor implements Serializable {
     @XNode("@type")
     private String type;
 
-    public Boolean isEnabled(){
+    public Boolean isEnabled() {
         if (enabled != null) {
             return enabled;
         } else {
@@ -48,7 +46,7 @@ public class ClassificationDescriptor implements Serializable {
         }
     }
 
-    public String getType(){
+    public String getType() {
         return type;
     }
 

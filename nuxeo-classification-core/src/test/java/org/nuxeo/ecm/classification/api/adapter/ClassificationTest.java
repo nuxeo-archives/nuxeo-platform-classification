@@ -32,8 +32,7 @@ import com.google.inject.Inject;
 @RunWith(FeaturesRunner.class)
 @Features(PlatformFeature.class)
 @RepositoryConfig(init = DefaultRepositoryInit.class)
-@Deploy({ "org.nuxeo.ecm.platform.classification.api",
-        "org.nuxeo.ecm.platform.classification.core" })
+@Deploy({ "org.nuxeo.ecm.platform.classification.api", "org.nuxeo.ecm.platform.classification.core" })
 @LocalDeploy({ "org.nuxeo.ecm.platform.classification.api:OSGI-INF/classification-resolver-contrib.xml" })
 public class ClassificationTest {
 
@@ -46,14 +45,14 @@ public class ClassificationTest {
     DocumentModel root;
 
     DocumentModel child1;
+
     DocumentModel child2;
 
     Classification classif;
 
     @Before
     public void beforeMethod() throws ClientException {
-        root = session.createDocumentModel("/default-domain/workspaces/test",
-                "classifRoot", "ClassificationRoot");
+        root = session.createDocumentModel("/default-domain/workspaces/test", "classifRoot", "ClassificationRoot");
         root = session.createDocument(root);
 
         child1 = session.createDocumentModel("/", "file1", "File");
@@ -86,8 +85,7 @@ public class ClassificationTest {
 
     @Test
     public void testFakerResolver() throws ClientException {
-        assertEquals(FAKE_ID,
-                cs.resolveClassification(session, "fake", "something"));
+        assertEquals(FAKE_ID, cs.resolveClassification(session, "fake", "something"));
 
         classif.add("fake", child1.getId());
         classif.add(child2.getId());

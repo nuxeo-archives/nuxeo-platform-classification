@@ -48,8 +48,7 @@ public class ClassificationResolverDescriptor {
             try {
                 return (ClassificationResolver) clazz.newInstance();
             } catch (InstantiationException e) {
-                log.warn("Unable to instantiate " + clazz.getCanonicalName()
-                        + " as "
+                log.warn("Unable to instantiate " + clazz.getCanonicalName() + " as "
                         + ClassificationResolver.class.getCanonicalName());
                 log.debug(e, e);
             } catch (IllegalAccessException e) {

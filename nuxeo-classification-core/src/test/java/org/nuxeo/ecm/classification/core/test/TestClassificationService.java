@@ -52,8 +52,7 @@ import java.util.List;
 @RunWith(FeaturesRunner.class)
 @Features(PlatformFeature.class)
 @RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.METHOD)
-@Deploy({ "org.nuxeo.ecm.platform.classification.api",
-        "org.nuxeo.ecm.platform.classification.core" })
+@Deploy({ "org.nuxeo.ecm.platform.classification.api", "org.nuxeo.ecm.platform.classification.core" })
 @LocalDeploy({ "org.nuxeo.ecm.platform.classification.core:OSGI-INF/classification-classifiable-types-test-contrib.xml" })
 public class TestClassificationService {
 
@@ -83,22 +82,20 @@ public class TestClassificationService {
         DocumentModel folder = session.createDocumentModel("/", "foo", "Folder");
         folder = session.createDocument(folder);
         assertTrue(cs.isClassifiable(folder));
-        DocumentModel classifiableDoc = session.createDocumentModel("/", "bar",
-                "ClassifiableDoc");
+        DocumentModel classifiableDoc = session.createDocumentModel("/", "bar", "ClassifiableDoc");
         assertTrue(cs.isClassifiable(classifiableDoc));
     }
 
     @Test
     public void testClassify() throws ClientException {
-        DocumentModel classifFolder = session.createDocument(session.createDocumentModel(
-                "/default-domain", "cFolder", "ClassificationFolder"));
+        DocumentModel classifFolder = session.createDocument(session.createDocumentModel("/default-domain", "cFolder",
+                "ClassificationFolder"));
 
         List<DocumentModel> docs = new ArrayList<DocumentModel>();
         final String testWorkspace = "/default-domain/workspaces/test";
 
         for (int i = 0; i < 4; i++) {
-            docs.add(session.createDocument(session.createDocumentModel(
-                    testWorkspace, "xxx", "File")));
+            docs.add(session.createDocument(session.createDocumentModel(testWorkspace, "xxx", "File")));
         }
 
         session.save();
@@ -106,8 +103,7 @@ public class TestClassificationService {
         assertEquals(4, docs.size());
         assertEquals(0, session.getChildren(classifFolder.getRef()).size());
 
-        ClassificationResult<ClassificationService.CLASSIFY_STATE> classified = cs.classify(
-                classifFolder, docs);
+        ClassificationResult<ClassificationService.CLASSIFY_STATE> classified = cs.classify(classifFolder, docs);
         assertEquals(4, classified.get(CLASSIFIED).size());
         assertFalse(classified.contains(INVALID));
         assertFalse(classified.contains(ALREADY_CLASSIFIED));
@@ -116,15 +112,13 @@ public class TestClassificationService {
         classifFolder = session.getDocument(classifFolder.getRef());
         assertEquals(4, classifFolder.getAdapter(Classification.class).getClassifiedDocumentIds().size());
 
-        docs.add(session.createDocument(session.createDocumentModel(
-                testWorkspace, "xxx-", "File")));
+        docs.add(session.createDocument(session.createDocumentModel(testWorkspace, "xxx-", "File")));
         classified = cs.classify(classifFolder, docs);
         assertEquals(1, classified.get(CLASSIFIED).size());
         assertEquals(4, classified.get(ALREADY_CLASSIFIED).size());
 
         List<String> docIds = new ArrayList<String>();
-        docIds.add(session.createDocument(session.createDocumentModel(
-                testWorkspace, "xxx-", "File")).getId());
+        docIds.add(session.createDocument(session.createDocumentModel(testWorkspace, "xxx-", "File")).getId());
         docIds.add(session.getChild(new PathRef(testWorkspace), "xxx").getId());
 
         session.save();

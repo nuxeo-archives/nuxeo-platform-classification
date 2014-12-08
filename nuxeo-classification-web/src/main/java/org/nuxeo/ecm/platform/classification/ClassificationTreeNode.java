@@ -46,8 +46,7 @@ public class ClassificationTreeNode extends DocumentTreeNodeImpl {
 
     private static final Log log = LogFactory.getLog(ClassificationTreeNode.class);
 
-    public ClassificationTreeNode(DocumentModel document, Filter filter,
-            Sorter sorter) {
+    public ClassificationTreeNode(DocumentModel document, Filter filter, Sorter sorter) {
         super(document, filter, sorter);
     }
 
@@ -63,13 +62,11 @@ public class ClassificationTreeNode extends DocumentTreeNodeImpl {
             }
 
             // get and filter
-            DocumentModelList coreChildren = session.getChildren(
-                    document.getRef(), null, SecurityConstants.READ, filter,
-                    sorter);
+            DocumentModelList coreChildren = session.getChildren(document.getRef(), null, SecurityConstants.READ,
+                    filter, sorter);
             for (DocumentModel child : coreChildren) {
                 String identifier = child.getId();
-                children.put(identifier, new ClassificationTreeNode(child,
-                        filter, sorter));
+                children.put(identifier, new ClassificationTreeNode(child, filter, sorter));
             }
 
             // addResolver classified files as children, respecting PLE-252 (folders
@@ -84,8 +81,7 @@ public class ClassificationTreeNode extends DocumentTreeNodeImpl {
             Collections.sort(classifChildren, sorter);
             for (DocumentModel child : classifChildren) {
                 String identifier = child.getId();
-                children.put(identifier, new ClassificationTreeNode(child,
-                        filter, sorter));
+                children.put(identifier, new ClassificationTreeNode(child, filter, sorter));
             }
         } catch (ClientException e) {
             log.error(e);

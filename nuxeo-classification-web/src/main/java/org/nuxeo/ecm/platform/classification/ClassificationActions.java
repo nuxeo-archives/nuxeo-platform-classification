@@ -57,8 +57,7 @@ public interface ClassificationActions extends Serializable {
     /**
      * Returns target documents when classifying an envelope.
      * <p>
-     * May take into account only current email, or all emails in current
-     * envelope.
+     * May take into account only current email, or all emails in current envelope.
      * </p>
      */
     Collection<DocumentModel> getTargetDocuments() throws ClientException;
@@ -69,14 +68,12 @@ public interface ClassificationActions extends Serializable {
     Collection<DocumentModel> getMassTargetDocuments() throws ClientException;
 
     /**
-     * Classifies current email or envelope in given folder and redirect to
-     * current page.
+     * Classifies current email or envelope in given folder and redirect to current page.
      */
     String classify(ClassificationTreeNode node) throws ClientException;
 
     /**
-     * Classifies a list of emails in given folder and redirect to current
-     * page.
+     * Classifies a list of emails in given folder and redirect to current page.
      */
     String massClassify(ClassificationTreeNode node) throws ClientException;
 
@@ -85,8 +82,7 @@ public interface ClassificationActions extends Serializable {
      *
      * @return true on error
      */
-    boolean classify(Collection<DocumentModel> targetDocs,
-            DocumentModel classificationFolder) throws ClientException;
+    boolean classify(Collection<DocumentModel> targetDocs, DocumentModel classificationFolder) throws ClientException;
 
     String cancelClassification() throws ClientException;
 
@@ -95,8 +91,7 @@ public interface ClassificationActions extends Serializable {
     /**
      * Sets current classification root id, and set it as current document.
      */
-    void setCurrentClassificationRootId(String newRootId)
-            throws ClientException;
+    void setCurrentClassificationRootId(String newRootId) throws ClientException;
 
     String navigateToCurrentClassificationRoot() throws ClientException;
 
@@ -104,38 +99,32 @@ public interface ClassificationActions extends Serializable {
 
     String getCurrentEditableClassificationRootId() throws ClientException;
 
-    void setCurrentEditableClassificationRootId(String newRootId)
-            throws ClientException;
+    void setCurrentEditableClassificationRootId(String newRootId) throws ClientException;
 
     DocumentModel getCurrentEditableClassificationRoot() throws ClientException;
 
     DocumentTreeNode getCurrentClassificationTree() throws ClientException;
 
-    DocumentTreeNode getCurrentEditableClassificationTree()
-            throws ClientException;
+    DocumentTreeNode getCurrentEditableClassificationTree() throws ClientException;
 
     DocumentModelList getClassificationRoots() throws ClientException;
 
     DocumentModelList getEditableClassificationRoots() throws ClientException;
 
-    void editableClassificationRootSelected(ValueChangeEvent event)
-            throws ClientException;
+    void editableClassificationRootSelected(ValueChangeEvent event) throws ClientException;
 
     void resetClassificationData();
 
     void resetCurrentDocumentClassifications();
 
-    DocumentModelList getCurrentDocumentClassifications()
-            throws ClientException;
+    DocumentModelList getCurrentDocumentClassifications() throws ClientException;
 
     /**
      * Returns classification form for selected documents
      *
-     * @param currentViewId the current view id, so that redirection can be
-     *            done correctly on cancel.
+     * @param currentViewId the current view id, so that redirection can be done correctly on cancel.
      */
-    String showCurrentSelectionClassificationForm(String currentViewId)
-            throws ClientException;
+    String showCurrentSelectionClassificationForm(String currentViewId) throws ClientException;
 
     String cancelCurrentSelectionClassificationForm() throws ClientException;
 
@@ -146,7 +135,6 @@ public interface ClassificationActions extends Serializable {
      *
      * @return true on error
      */
-    boolean unclassify(Collection<String> targetDocIds,
-            DocumentModel classificationFolder) throws ClientException;
+    boolean unclassify(Collection<String> targetDocIds, DocumentModel classificationFolder) throws ClientException;
 
 }

@@ -128,14 +128,12 @@ public class ClassificationActionsBean implements ClassificationActions {
 
     protected String currentSelectionViewId;
 
-    protected List<DocumentModel> getFilteredSelectedDocumentsForClassification()
-            throws ClientException {
+    protected List<DocumentModel> getFilteredSelectedDocumentsForClassification() throws ClientException {
         ClassificationService clService;
         try {
             clService = Framework.getService(ClassificationService.class);
         } catch (Exception e) {
-            throw new ClientException("Could not find Classification Service",
-                    e);
+            throw new ClientException("Could not find Classification Service", e);
         }
         List<DocumentModel> filtered = new DocumentModelListImpl();
         List<DocumentModel> docs = documentsListsManager.getWorkingList(DocumentsListsManager.CURRENT_DOCUMENT_SELECTION);
@@ -159,8 +157,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         return !classifiable.isEmpty();
     }
 
-    public Collection<DocumentModel> getTargetDocuments()
-            throws ClientException {
+    public Collection<DocumentModel> getTargetDocuments() throws ClientException {
         Collection<DocumentModel> res = new ArrayList<DocumentModel>();
         res.add(navigationContext.getCurrentDocument());
         return res;
@@ -176,8 +173,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         return null;
     }
 
-    public Collection<DocumentModel> getMassTargetDocuments()
-            throws ClientException {
+    public Collection<DocumentModel> getMassTargetDocuments() throws ClientException {
         if (!documentsListsManager.isWorkingListEmpty(CURRENT_SELECTION_FOR_CLASSIFICATION)) {
             return documentsListsManager.getWorkingList(CURRENT_SELECTION_FOR_CLASSIFICATION);
         } else {
@@ -186,8 +182,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         }
     }
 
-    public void simpleClassify(ClassificationTreeNode node)
-            throws ClientException {
+    public void simpleClassify(ClassificationTreeNode node) throws ClientException {
         if (node != null) {
             Collection<DocumentModel> targetDocs = Arrays.asList(navigationContext.getCurrentDocument());
 
@@ -197,8 +192,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         }
     }
 
-    public String massClassify(ClassificationTreeNode node)
-            throws ClientException {
+    public String massClassify(ClassificationTreeNode node) throws ClientException {
         Collection<DocumentModel> targetDocs = getMassTargetDocuments();
         if (node != null && targetDocs != null) {
             classify(targetDocs, node.getDocument());
@@ -214,32 +208,24 @@ public class ClassificationActionsBean implements ClassificationActions {
      * @return true on error
      */
     @SuppressWarnings("unchecked")
-    public boolean classify(Collection<DocumentModel> targetDocs,
-            DocumentModel classificationFolder) throws ClientException {
+    public boolean classify(Collection<DocumentModel> targetDocs, DocumentModel classificationFolder)
+            throws ClientException {
         if (targetDocs.isEmpty()) {
-            facesMessages.add(
-                    ERROR,
-                    messages.get("feedback.classification.noDocumentsToClassify"));
+            facesMessages.add(ERROR, messages.get("feedback.classification.noDocumentsToClassify"));
             return true;
         }
         if (classificationFolder == null) {
-            facesMessages.add(
-                    ERROR,
-                    messages.get("feedback.classification.noClassificationFolder"));
+            facesMessages.add(ERROR, messages.get("feedback.classification.noClassificationFolder"));
             return true;
         }
         if (!classificationFolder.hasSchema(ClassificationConstants.CLASSIFICATION_SCHEMA_NAME)) {
-            facesMessages.add(
-                    ERROR,
-                    messages.get("feedback.classification.invalidClassificationFolder"));
+            facesMessages.add(ERROR, messages.get("feedback.classification.invalidClassificationFolder"));
             return true;
         }
 
         DocumentRef classificationRef = classificationFolder.getRef();
-        if (!documentManager.hasPermission(classificationRef,
-                ClassificationConstants.CLASSIFY)) {
-            facesMessages.add(ERROR,
-                    messages.get("feedback.classification.unauthorized"));
+        if (!documentManager.hasPermission(classificationRef, ClassificationConstants.CLASSIFY)) {
+            facesMessages.add(ERROR, messages.get("feedback.classification.unauthorized"));
             return true;
         }
 
@@ -254,20 +240,14 @@ public class ClassificationActionsBean implements ClassificationActions {
         boolean alreadyClassified = classify.contains(ClassificationService.CLASSIFY_STATE.ALREADY_CLASSIFIED);
 
         if (invalid && alreadyClassified) {
-            facesMessages.add(
-                    WARN,
+            facesMessages.add(WARN,
                     messages.get("feedback.classification.requestDoneButSomeWereAlreadyClassifiedAndSomeInvalid"));
         } else if (invalid) {
-            facesMessages.add(
-                    WARN,
-                    messages.get("feedback.classification.requestDoneButSomeInvalid"));
+            facesMessages.add(WARN, messages.get("feedback.classification.requestDoneButSomeInvalid"));
         } else if (alreadyClassified) {
-            facesMessages.add(
-                    WARN,
-                    messages.get("feedback.classification.requestDoneButSomeWereAlreadyClassified"));
+            facesMessages.add(WARN, messages.get("feedback.classification.requestDoneButSomeWereAlreadyClassified"));
         } else {
-            facesMessages.add(INFO,
-                    messages.get("feedback.classification.requestDone"));
+            facesMessages.add(INFO, messages.get("feedback.classification.requestDone"));
         }
 
         resetCurrentDocumentClassifications();
@@ -290,8 +270,7 @@ public class ClassificationActionsBean implements ClassificationActions {
     /**
      * Sets current classification root id, and set it as current document.
      */
-    public void setCurrentClassificationRootId(String newRootId)
-            throws ClientException {
+    public void setCurrentClassificationRootId(String newRootId) throws ClientException {
         if (newRootId != null) {
             DocumentModelList roots = getClassificationRoots();
             for (DocumentModel root : roots) {
@@ -327,8 +306,7 @@ public class ClassificationActionsBean implements ClassificationActions {
     }
 
     @Factory(value = "currentEditableClassificationRootId", scope = EVENT)
-    public String getCurrentEditableClassificationRootId()
-            throws ClientException {
+    public String getCurrentEditableClassificationRootId() throws ClientException {
         DocumentModel root = getCurrentEditableClassificationRoot();
         if (root != null) {
             return root.getId();
@@ -336,8 +314,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         return null;
     }
 
-    public void setCurrentEditableClassificationRootId(String newRootId)
-            throws ClientException {
+    public void setCurrentEditableClassificationRootId(String newRootId) throws ClientException {
         if (newRootId != null) {
             DocumentModelList roots = getEditableClassificationRoots();
             for (DocumentModel root : roots) {
@@ -352,8 +329,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         }
     }
 
-    public DocumentModel getCurrentEditableClassificationRoot()
-            throws ClientException {
+    public DocumentModel getCurrentEditableClassificationRoot() throws ClientException {
         if (currentEditableClassificationRoot == null) {
             // initialize roots and take first
             DocumentModelList roots = getEditableClassificationRoots();
@@ -365,8 +341,7 @@ public class ClassificationActionsBean implements ClassificationActions {
     }
 
     @Factory(value = "currentClassificationTree", scope = EVENT)
-    public DocumentTreeNode getCurrentClassificationTree()
-            throws ClientException {
+    public DocumentTreeNode getCurrentClassificationTree() throws ClientException {
         if (currentClassificationTree == null) {
             // initialize current root
             DocumentModel root = getCurrentClassificationRoot();
@@ -378,21 +353,17 @@ public class ClassificationActionsBean implements ClassificationActions {
                     filter = treeManager.getFilter(TREE_PLUGIN_NAME);
                     sorter = treeManager.getSorter(TREE_PLUGIN_NAME);
                 } catch (Exception e) {
-                    log.error(
-                            "Could not fetch filter, sorter or node type for tree ",
-                            e);
+                    log.error("Could not fetch filter, sorter or node type for tree ", e);
                 }
                 // standard tree node: no need to show classified documents
-                currentClassificationTree = new DocumentTreeNodeImpl(root,
-                        filter, sorter);
+                currentClassificationTree = new DocumentTreeNodeImpl(root, filter, sorter);
             }
         }
         return currentClassificationTree;
     }
 
     @Factory(value = "currentEditableClassificationTree", scope = EVENT)
-    public DocumentTreeNode getCurrentEditableClassificationTree()
-            throws ClientException {
+    public DocumentTreeNode getCurrentEditableClassificationTree() throws ClientException {
         if (currentEditableClassificationTree == null) {
             // initialize current root
             DocumentModel root = getCurrentEditableClassificationRoot();
@@ -404,12 +375,9 @@ public class ClassificationActionsBean implements ClassificationActions {
                     filter = treeManager.getFilter(TREE_PLUGIN_NAME);
                     sorter = treeManager.getSorter(TREE_PLUGIN_NAME);
                 } catch (Exception e) {
-                    log.error(
-                            "Could not fetch filter, sorter or node type for tree ",
-                            e);
+                    log.error("Could not fetch filter, sorter or node type for tree ", e);
                 }
-                currentEditableClassificationTree = new ClassificationTreeNode(
-                        root, filter, sorter);
+                currentEditableClassificationTree = new ClassificationTreeNode(root, filter, sorter);
             }
         }
         return currentEditableClassificationTree;
@@ -437,24 +405,20 @@ public class ClassificationActionsBean implements ClassificationActions {
         return classificationRoots;
     }
 
-    protected PageProvider<DocumentModel> getPageProvider(
-            String pageProviderName) throws ClientException {
+    protected PageProvider<DocumentModel> getPageProvider(String pageProviderName) throws ClientException {
         PageProviderService pps = Framework.getLocalService(PageProviderService.class);
         Map<String, Serializable> props = new HashMap<String, Serializable>();
         props.put(CORE_SESSION_PROPERTY, (Serializable) documentManager);
-        return (PageProvider<DocumentModel>) pps.getPageProvider(
-                pageProviderName, null, null, null, props, null);
+        return (PageProvider<DocumentModel>) pps.getPageProvider(pageProviderName, null, null, null, props, null);
     }
 
     @Factory(value = "editableClassificationRoots", scope = EVENT)
-    public DocumentModelList getEditableClassificationRoots()
-            throws ClientException {
+    public DocumentModelList getEditableClassificationRoots() throws ClientException {
         if (editableClassificationRoots == null) {
             editableClassificationRoots = new DocumentModelListImpl();
             for (DocumentModel classificationRoot : getClassificationRoots()) {
                 DocumentRef rootRef = classificationRoot.getRef();
-                if (documentManager.hasPermission(rootRef,
-                        ClassificationConstants.CLASSIFY)) {
+                if (documentManager.hasPermission(rootRef, ClassificationConstants.CLASSIFY)) {
                     // XXX refetch it to be a real document model instead of a
                     // ResultDocumentModel that does not handle lists correctly
                     // (dc:contributors is Object[] instead of String[]) + get
@@ -467,8 +431,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         return editableClassificationRoots;
     }
 
-    public void editableClassificationRootSelected(ValueChangeEvent event)
-            throws ClientException {
+    public void editableClassificationRootSelected(ValueChangeEvent event) throws ClientException {
         Object newValue = event.getNewValue();
         if (newValue instanceof String) {
             String newRootId = (String) newValue;
@@ -476,11 +439,8 @@ public class ClassificationActionsBean implements ClassificationActions {
         }
     }
 
-    @Observer(value = { EventNames.GO_HOME,
-            EventNames.DOMAIN_SELECTION_CHANGED, EventNames.DOCUMENT_CHANGED,
-            EventNames.NAVIGATE_TO_DOCUMENT,
-            EventNames.DOCUMENT_SECURITY_CHANGED,
-            EventNames.DOCUMENT_CHILDREN_CHANGED }, create = false)
+    @Observer(value = { EventNames.GO_HOME, EventNames.DOMAIN_SELECTION_CHANGED, EventNames.DOCUMENT_CHANGED,
+            EventNames.NAVIGATE_TO_DOCUMENT, EventNames.DOCUMENT_SECURITY_CHANGED, EventNames.DOCUMENT_CHILDREN_CHANGED }, create = false)
     public void resetClassificationData() {
         classificationRoots = null;
         // do not reset current classification root to not lose current
@@ -492,9 +452,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         resetCurrentDocumentClassifications();
     }
 
-    @Observer(value = { EventNames.GO_HOME,
-            EventNames.DOMAIN_SELECTION_CHANGED,
-            EventNames.DOCUMENT_SELECTION_CHANGED }, create = false)
+    @Observer(value = { EventNames.GO_HOME, EventNames.DOMAIN_SELECTION_CHANGED, EventNames.DOCUMENT_SELECTION_CHANGED }, create = false)
     public void resetCurrentDocumentClassifications() {
         currentDocumentClassifications = null;
         documentsListsManager.resetWorkingList(CURRENT_DOCUMENT_CLASSIFICATIONS_SELECTION);
@@ -505,8 +463,7 @@ public class ClassificationActionsBean implements ClassificationActions {
     }
 
     @Factory(value = "currentDocumentClassifications", scope = EVENT)
-    public DocumentModelList getCurrentDocumentClassifications()
-            throws ClientException {
+    public DocumentModelList getCurrentDocumentClassifications() throws ClientException {
         if (currentDocumentClassifications == null) {
             DocumentModel currentDocument = navigationContext.getCurrentDocument();
             Classification adapter = currentDocument.getAdapter(Classification.class);
@@ -519,11 +476,9 @@ public class ClassificationActionsBean implements ClassificationActions {
     /**
      * Returns classification form for selected documents
      *
-     * @param currentViewId the current view id, so that redirection can be
-     *            done correctly on cancel.
+     * @param currentViewId the current view id, so that redirection can be done correctly on cancel.
      */
-    public String showCurrentSelectionClassificationForm(String currentViewId)
-            throws ClientException {
+    public String showCurrentSelectionClassificationForm(String currentViewId) throws ClientException {
         currentSelectionViewId = currentViewId;
 
         ContentView contentView = contentViewActions.getContentView("MASS_CLASSIFICATION_REQUEST");
@@ -533,15 +488,13 @@ public class ClassificationActionsBean implements ClassificationActions {
         DocumentModelListPageProvider pageProvider = (DocumentModelListPageProvider) contentView.getPageProvider();
         pageProvider.setDocumentModelList(documentsListsManager.getWorkingList("CURRENT_SELECTION"));
 
-        documentsListsManager.getWorkingList(
-                "CURRENT_SELECTION_FOR_CLASSIFICATION").addAll(
+        documentsListsManager.getWorkingList("CURRENT_SELECTION_FOR_CLASSIFICATION").addAll(
                 pageProvider.getCurrentPage());
 
         return CURRENT_SELECTION_FOR_CLASSIFICATION_PAGE;
     }
 
-    public String cancelCurrentSelectionClassificationForm()
-            throws ClientException {
+    public String cancelCurrentSelectionClassificationForm() throws ClientException {
         // XXX AT: this is a hack to redirect to correct page
         if ("/search/search_results_simple.xhtml".equals(currentSelectionViewId)) {
             return "search_results_simple";
@@ -587,8 +540,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         if (!documentsListsManager.isWorkingListEmpty(CURRENT_SELECTION_FOR_UNCLASSIFICATION)) {
             List<DocumentModel> toDel = documentsListsManager.getWorkingList(CURRENT_SELECTION_FOR_UNCLASSIFICATION);
             ClassificationResult<ClassificationService.UNCLASSIFY_STATE> classificationResult = Framework.getLocalService(
-                    ClassificationService.class).unClassifyFrom(toDel,
-                    navigationContext.getCurrentDocument().getId());
+                    ClassificationService.class).unClassifyFrom(toDel, navigationContext.getCurrentDocument().getId());
 
             Events.instance().raiseEvent(AuditEventTypes.HISTORY_CHANGED);
             resetCurrentDocumentClassifications();
@@ -599,13 +551,11 @@ public class ClassificationActionsBean implements ClassificationActions {
             }
 
             if (classificationResult.contains(NOT_ENOUGH_RIGHTS)) {
-                facesMessages.add(WARN,
-                        messages.get("feedback.unclassification.unauthorized"));
+                facesMessages.add(WARN, messages.get("feedback.unclassification.unauthorized"));
                 return;
             }
 
-            facesMessages.add(INFO,
-                    messages.get("feedback.unclassification.requestDone"));
+            facesMessages.add(INFO, messages.get("feedback.unclassification.requestDone"));
             resetCurrentDocumentClassifications();
         } else {
             log.warn("No documents selection in context to process unclassify on current document.");
@@ -617,31 +567,23 @@ public class ClassificationActionsBean implements ClassificationActions {
      *
      * @return true on error
      */
-    public boolean unclassify(Collection<String> targetDocIds,
-            DocumentModel classificationFolder) throws ClientException {
+    public boolean unclassify(Collection<String> targetDocIds, DocumentModel classificationFolder)
+            throws ClientException {
         if (targetDocIds.isEmpty()) {
-            facesMessages.add(
-                    ERROR,
-                    messages.get("feedback.unclassification.noDocumentsToUnclassify"));
+            facesMessages.add(ERROR, messages.get("feedback.unclassification.noDocumentsToUnclassify"));
             return true;
         }
         if (classificationFolder == null) {
-            facesMessages.add(
-                    ERROR,
-                    messages.get("feedback.classification.noClassificationFolder"));
+            facesMessages.add(ERROR, messages.get("feedback.classification.noClassificationFolder"));
             return true;
         }
         if (!classificationFolder.hasSchema(ClassificationConstants.CLASSIFICATION_SCHEMA_NAME)) {
-            facesMessages.add(
-                    ERROR,
-                    messages.get("feedback.classification.invalidClassificationFolder"));
+            facesMessages.add(ERROR, messages.get("feedback.classification.invalidClassificationFolder"));
             return true;
         }
         DocumentRef classificationRef = classificationFolder.getRef();
-        if (!documentManager.hasPermission(classificationRef,
-                ClassificationConstants.CLASSIFY)) {
-            facesMessages.add(ERROR,
-                    messages.get("feedback.unclassification.unauthorized"));
+        if (!documentManager.hasPermission(classificationRef, ClassificationConstants.CLASSIFY)) {
+            facesMessages.add(ERROR, messages.get("feedback.unclassification.unauthorized"));
             return true;
         }
 
@@ -652,12 +594,9 @@ public class ClassificationActionsBean implements ClassificationActions {
         Events.instance().raiseEvent(AuditEventTypes.HISTORY_CHANGED);
 
         if (listMap.contains(NOT_CLASSIFIED)) {
-            facesMessages.add(
-                    WARN,
-                    messages.get("feedback.unclassification.requestDoneButSomeWereNotClassified"));
+            facesMessages.add(WARN, messages.get("feedback.unclassification.requestDoneButSomeWereNotClassified"));
         } else {
-            facesMessages.add(INFO,
-                    messages.get("feedback.unclassification.requestDone"));
+            facesMessages.add(INFO, messages.get("feedback.unclassification.requestDone"));
         }
         resetCurrentDocumentClassifications();
         return false;
