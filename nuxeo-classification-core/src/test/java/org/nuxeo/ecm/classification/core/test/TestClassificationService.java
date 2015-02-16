@@ -19,9 +19,9 @@
 
 package org.nuxeo.ecm.classification.core.test;
 
-import com.google.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 import static org.nuxeo.ecm.classification.api.ClassificationService.CLASSIFY_STATE.ALREADY_CLASSIFIED;
 import static org.nuxeo.ecm.classification.api.ClassificationService.CLASSIFY_STATE.CLASSIFIED;
@@ -48,6 +48,8 @@ import org.nuxeo.runtime.test.runner.LocalDeploy;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 @RunWith(FeaturesRunner.class)
 @Features(PlatformFeature.class)

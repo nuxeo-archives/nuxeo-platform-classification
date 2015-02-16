@@ -1,6 +1,5 @@
 package org.nuxeo.ecm.classification.core.operation;
 
-import com.google.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +21,8 @@ import org.nuxeo.runtime.test.runner.LocalDeploy;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
