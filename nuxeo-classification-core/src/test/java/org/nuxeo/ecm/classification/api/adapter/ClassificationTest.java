@@ -20,7 +20,7 @@ import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentRef;
-import org.nuxeo.ecm.core.storage.sql.DatabaseHelper;
+import org.nuxeo.ecm.core.test.CoreFeature;
 import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
 import org.nuxeo.ecm.platform.test.PlatformFeature;
@@ -35,6 +35,9 @@ import org.nuxeo.runtime.test.runner.LocalDeploy;
 @Deploy({ "org.nuxeo.ecm.platform.classification.api", "org.nuxeo.ecm.platform.classification.core" })
 @LocalDeploy({ "org.nuxeo.ecm.platform.classification.api:OSGI-INF/classification-resolver-contrib.xml" })
 public class ClassificationTest {
+
+    @Inject
+    protected CoreFeature coreFeature;
 
     @Inject
     ClassificationService cs;
@@ -124,13 +127,13 @@ public class ClassificationTest {
         child1.setPropertyValue("dc:description", "title");
         child1 = session.saveDocument(child1);
 
-        DatabaseHelper.DATABASE.maybeSleepToNextSecond();
+        coreFeature.getStorageConfiguration().maybeSleepToNextSecond();
 
         child1.checkIn(MAJOR, null);
         child1.setPropertyValue("dc:description", "title2");
         child1 = session.saveDocument(child1);
 
-        DatabaseHelper.DATABASE.maybeSleepToNextSecond();
+        coreFeature.getStorageConfiguration().maybeSleepToNextSecond();
 
         DocumentRef lastVersion = child1.checkIn(MAJOR, null);
 
