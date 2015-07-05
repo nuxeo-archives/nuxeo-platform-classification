@@ -52,7 +52,7 @@ public class OperationsTest {
     Classification classif;
 
     @Before
-    public void beforeMethod() throws ClientException {
+    public void beforeMethod() {
         root = session.createDocumentModel("/default-domain/workspaces/test", "classifRoot", "ClassificationRoot");
         root = session.createDocument(root);
 

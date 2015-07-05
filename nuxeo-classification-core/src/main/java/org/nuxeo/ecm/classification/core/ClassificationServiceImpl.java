@@ -96,7 +96,7 @@ public class ClassificationServiceImpl extends DefaultComponent implements Class
 
     @Override
     public String resolveClassification(CoreSession session, final String name, final String targetDocId)
-            throws ClientException {
+            {
         if (!resolvers.containsKey(name)) {
             log.warn("reference to a missing resolver (" + name + "); returning the original doc id");
             return targetDocId;
@@ -105,7 +105,7 @@ public class ClassificationServiceImpl extends DefaultComponent implements Class
         final String[] realTargetDocId = new String[1];
         new UnrestrictedSessionRunner(session) {
             @Override
-            public void run() throws ClientException {
+            public void run() {
                 realTargetDocId[0] = resolvers.get(name).resolve(session, targetDocId);
             }
         }.runUnrestricted();
@@ -139,7 +139,7 @@ public class ClassificationServiceImpl extends DefaultComponent implements Class
 
     @Override
     public ClassificationResult<CLASSIFY_STATE> classify(DocumentModel classificationFolder, String resolver,
-            Collection<DocumentModel> targetDocs) throws ClientException {
+            Collection<DocumentModel> targetDocs) {
         ClassificationResult<CLASSIFY_STATE> classify = classify(classificationFolder, targetDocs);
         Classification adapter = classificationFolder.getAdapter(Classification.class);
 
@@ -158,7 +158,7 @@ public class ClassificationServiceImpl extends DefaultComponent implements Class
 
     @Override
     public ClassificationResult<CLASSIFY_STATE> classify(DocumentModel classificationFolder,
-            Collection<DocumentModel> targetDocs) throws ClientException {
+            Collection<DocumentModel> targetDocs) {
         ClassificationResult<CLASSIFY_STATE> result = new ClassificationResult<CLASSIFY_STATE>();
         CoreSession session = classificationFolder.getCoreSession();
         if (session == null) {
@@ -201,7 +201,7 @@ public class ClassificationServiceImpl extends DefaultComponent implements Class
 
     @Override
     public ClassificationResult<UNCLASSIFY_STATE> unClassify(DocumentModel classificationFolder,
-            Collection<String> targetDocs) throws ClientException {
+            Collection<String> targetDocs) {
         ClassificationResult<UNCLASSIFY_STATE> result = new ClassificationResult<UNCLASSIFY_STATE>();
         CoreSession session = classificationFolder.getCoreSession();
         if (session == null) {
@@ -242,7 +242,7 @@ public class ClassificationServiceImpl extends DefaultComponent implements Class
 
     @Override
     public ClassificationResult<UNCLASSIFY_STATE> unClassifyFrom(Collection<DocumentModel> classificationFolders,
-            String targetId) throws ClientException {
+            String targetId) {
         ClassificationResult<UNCLASSIFY_STATE> result = new ClassificationResult<UNCLASSIFY_STATE>();
         if (classificationFolders == null || classificationFolders.isEmpty()) {
             throw new ClientException("Empty classification folders list");
@@ -276,7 +276,7 @@ public class ClassificationServiceImpl extends DefaultComponent implements Class
     }
 
     protected static void notifyEvent(CoreSession coreSession, String eventId, DocumentModel source, String category,
-            String comment, String author, Map<String, Serializable> options) throws ClientException {
+            String comment, String author, Map<String, Serializable> options) {
 
         // Default category
         if (category == null) {

@@ -51,7 +51,7 @@ public class ClassificationTest {
     Classification classif;
 
     @Before
-    public void beforeMethod() throws ClientException {
+    public void beforeMethod() {
         root = session.createDocumentModel("/default-domain/workspaces/test", "classifRoot", "ClassificationRoot");
         root = session.createDocument(root);
 
@@ -68,7 +68,7 @@ public class ClassificationTest {
     }
 
     @Test
-    public void testAdapterResolvers() throws ClientException {
+    public void testAdapterResolvers() {
         classif.add("default", child1.getId());
         session.saveDocument(classif.getDocument());
 
@@ -84,7 +84,7 @@ public class ClassificationTest {
     }
 
     @Test
-    public void testFakerResolver() throws ClientException {
+    public void testFakerResolver() {
         assertEquals(FAKE_ID, cs.resolveClassification(session, "fake", "something"));
 
         classif.add("fake", child1.getId());
@@ -111,7 +111,7 @@ public class ClassificationTest {
     }
 
     @Test
-    public void testLastVersionResolver() throws ClientException {
+    public void testLastVersionResolver() {
         classif.add("lastVersion", child1.getId());
         session.saveDocument(classif.getDocument());
 
@@ -142,7 +142,7 @@ public class ClassificationTest {
         assertEquals(session.getDocument(lastVersion), doc);
     }
 
-    protected void refreshAll() throws ClientException {
+    protected void refreshAll() {
         session.save();
 
         root = session.getDocument(root.getRef());

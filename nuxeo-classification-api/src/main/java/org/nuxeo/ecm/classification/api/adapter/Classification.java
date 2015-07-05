@@ -53,7 +53,7 @@ public class Classification {
      * 
      * @throws org.nuxeo.ecm.core.api.ClientException
      */
-    public DocumentModelList getClassifiedDocuments() throws ClientException {
+    public DocumentModelList getClassifiedDocuments() {
         DocumentModelList targets = new DocumentModelListImpl();
         CoreSession session = getCoreSession();
 
@@ -67,11 +67,11 @@ public class Classification {
         return targets;
     }
 
-    public void setClassifiedDocumentIds(List<String> documents) throws ClientException {
+    public void setClassifiedDocumentIds(List<String> documents) {
         document.setPropertyValue(CLASSIFICATION_TARGETS_PROPERTY_NAME, (Serializable) documents);
     }
 
-    protected List<String> getTargetsPropertyValue() throws ClientException {
+    protected List<String> getTargetsPropertyValue() {
         List<String> classified = (List<String>) document.getPropertyValue(CLASSIFICATION_TARGETS_PROPERTY_NAME);
         if (classified == null) {
             classified = new ArrayList<String>();
@@ -80,7 +80,7 @@ public class Classification {
         return classified;
     }
 
-    public List<String> getClassifiedDocumentIds() throws ClientException {
+    public List<String> getClassifiedDocumentIds() {
         List<String> classified = getTargetsPropertyValue();
 
         ClassificationService service = Framework.getLocalService(ClassificationService.class);
@@ -99,16 +99,16 @@ public class Classification {
         return classifiedResolved;
     }
 
-    public void add(DocumentModel doc) throws ClientException {
+    public void add(DocumentModel doc) {
         add(doc.getId());
     }
 
-    public void add(String resolver, String docId) throws ClientException {
+    public void add(String resolver, String docId) {
         add(docId);
         addResolver(resolver, docId);
     }
 
-    public void addResolver(String resolver, String docId) throws ClientException {
+    public void addResolver(String resolver, String docId) {
         removeResolver(docId);
 
         List<Map<String, String>> resolvers = getResolversDocuments();
@@ -121,7 +121,7 @@ public class Classification {
         document.setPropertyValue(CLASSIFICATION_RESOLVERS_PROPERTY_NAME, (Serializable) resolvers);
     }
 
-    protected List<Map<String, String>> getResolversDocuments() throws ClientException {
+    protected List<Map<String, String>> getResolversDocuments() {
         List<Map<String, String>> value = (List<Map<String, String>>) document.getPropertyValue(CLASSIFICATION_RESOLVERS_PROPERTY_NAME);
         if (value == null) {
             value = new ArrayList<Map<String, String>>();
@@ -130,7 +130,7 @@ public class Classification {
         return value;
     }
 
-    protected String getResolver(String docId) throws ClientException {
+    protected String getResolver(String docId) {
         List<Map<String, String>> classifiedDocument = getResolversDocuments();
         for (Map<String, String> resolver : classifiedDocument) {
             if (docId.equals(resolver.get("target"))) {
@@ -141,7 +141,7 @@ public class Classification {
         return null;
     }
 
-    protected boolean removeResolver(String docId) throws ClientException {
+    protected boolean removeResolver(String docId) {
         List<Map<String, String>> classifiedDocument = getResolversDocuments();
 
         // remove existing resolver for docId
@@ -157,18 +157,18 @@ public class Classification {
         return false;
     }
 
-    public void add(String docId) throws ClientException {
+    public void add(String docId) {
         List<String> classifiedDocument = getTargetsPropertyValue();
         classifiedDocument.add(docId);
 
         setClassifiedDocumentIds(classifiedDocument);
     }
 
-    public boolean remove(DocumentModel doc) throws ClientException {
+    public boolean remove(DocumentModel doc) {
         return remove(doc.getId());
     }
 
-    public boolean remove(String docId) throws ClientException {
+    public boolean remove(String docId) {
         List<String> classifiedDocument = getTargetsPropertyValue();
         boolean removed = classifiedDocument.remove(docId);
         setClassifiedDocumentIds(classifiedDocument);
@@ -180,11 +180,11 @@ public class Classification {
         return removed;
     }
 
-    public boolean contains(DocumentModel documentModel) throws ClientException {
+    public boolean contains(DocumentModel documentModel) {
         return contains(documentModel.getId());
     }
 
-    public boolean contains(String docId) throws ClientException {
+    public boolean contains(String docId) {
         return getClassifiedDocumentIds().contains(docId);
     }
 
@@ -192,7 +192,7 @@ public class Classification {
         return document;
     }
 
-    protected CoreSession getCoreSession() throws ClientException {
+    protected CoreSession getCoreSession() {
         CoreSession session = document.getCoreSession();
         if (session == null) {
             throw new ClientException("Trying to resolve classified document with an offline document");

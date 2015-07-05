@@ -80,7 +80,7 @@ public class TestClassificationService {
     }
 
     @Test
-    public void testClassifiable() throws ClientException {
+    public void testClassifiable() {
         DocumentModel folder = session.createDocumentModel("/", "foo", "Folder");
         folder = session.createDocument(folder);
         assertTrue(cs.isClassifiable(folder));
@@ -89,7 +89,7 @@ public class TestClassificationService {
     }
 
     @Test
-    public void testClassify() throws ClientException {
+    public void testClassify() {
         DocumentModel classifFolder = session.createDocument(session.createDocumentModel("/default-domain", "cFolder",
                 "ClassificationFolder"));
 

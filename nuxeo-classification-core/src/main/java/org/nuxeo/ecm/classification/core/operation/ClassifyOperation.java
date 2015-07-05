@@ -52,7 +52,7 @@ public class ClassifyOperation {
     protected CoreSession session;
 
     @OperationMethod(collector = DocumentModelCollector.class)
-    public DocumentModel run(DocumentModel doc) throws ClientException {
+    public DocumentModel run(DocumentModel doc) {
         ClassificationService classificationService = Framework.getLocalService(ClassificationService.class);
         if (StringUtils.isBlank(resolver)) {
             classificationService.classify(folder, Arrays.asList(doc));

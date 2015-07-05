@@ -128,7 +128,7 @@ public class ClassificationActionsBean implements ClassificationActions {
 
     protected String currentSelectionViewId;
 
-    protected List<DocumentModel> getFilteredSelectedDocumentsForClassification() throws ClientException {
+    protected List<DocumentModel> getFilteredSelectedDocumentsForClassification() {
         ClassificationService clService;
         try {
             clService = Framework.getService(ClassificationService.class);
@@ -147,23 +147,23 @@ public class ClassificationActionsBean implements ClassificationActions {
         return filtered;
     }
 
-    public boolean getCanClassifyCurrentDocument() throws ClientException {
+    public boolean getCanClassifyCurrentDocument() {
         return Framework.getLocalService(ClassificationService.class).isClassifiable(
                 navigationContext.getCurrentDocument());
     }
 
-    public boolean getCanClassifyFromCurrentSelection() throws ClientException {
+    public boolean getCanClassifyFromCurrentSelection() {
         List<DocumentModel> classifiable = getFilteredSelectedDocumentsForClassification();
         return !classifiable.isEmpty();
     }
 
-    public Collection<DocumentModel> getTargetDocuments() throws ClientException {
+    public Collection<DocumentModel> getTargetDocuments() {
         Collection<DocumentModel> res = new ArrayList<DocumentModel>();
         res.add(navigationContext.getCurrentDocument());
         return res;
     }
 
-    public String classify(ClassificationTreeNode node) throws ClientException {
+    public String classify(ClassificationTreeNode node) {
         Collection<DocumentModel> targetDocs = getTargetDocuments();
         if (node != null) {
             classify(targetDocs, node.getDocument());
@@ -173,7 +173,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         return null;
     }
 
-    public Collection<DocumentModel> getMassTargetDocuments() throws ClientException {
+    public Collection<DocumentModel> getMassTargetDocuments() {
         if (!documentsListsManager.isWorkingListEmpty(CURRENT_SELECTION_FOR_CLASSIFICATION)) {
             return documentsListsManager.getWorkingList(CURRENT_SELECTION_FOR_CLASSIFICATION);
         } else {
@@ -182,7 +182,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         }
     }
 
-    public void simpleClassify(ClassificationTreeNode node) throws ClientException {
+    public void simpleClassify(ClassificationTreeNode node) {
         if (node != null) {
             Collection<DocumentModel> targetDocs = Arrays.asList(navigationContext.getCurrentDocument());
 
@@ -192,7 +192,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         }
     }
 
-    public String massClassify(ClassificationTreeNode node) throws ClientException {
+    public String massClassify(ClassificationTreeNode node) {
         Collection<DocumentModel> targetDocs = getMassTargetDocuments();
         if (node != null && targetDocs != null) {
             classify(targetDocs, node.getDocument());
@@ -209,7 +209,7 @@ public class ClassificationActionsBean implements ClassificationActions {
      */
     @SuppressWarnings("unchecked")
     public boolean classify(Collection<DocumentModel> targetDocs, DocumentModel classificationFolder)
-            throws ClientException {
+            {
         if (targetDocs.isEmpty()) {
             facesMessages.add(ERROR, messages.get("feedback.classification.noDocumentsToClassify"));
             return true;
@@ -254,12 +254,12 @@ public class ClassificationActionsBean implements ClassificationActions {
         return false;
     }
 
-    public String cancelClassification() throws ClientException {
+    public String cancelClassification() {
         DocumentModel currentDoc = navigationContext.getCurrentDocument();
         return navigationContext.navigateToDocument(currentDoc);
     }
 
-    public String getCurrentClassificationRootId() throws ClientException {
+    public String getCurrentClassificationRootId() {
         DocumentModel root = getCurrentClassificationRoot();
         if (root != null) {
             return root.getId();
@@ -270,7 +270,7 @@ public class ClassificationActionsBean implements ClassificationActions {
     /**
      * Sets current classification root id, and set it as current document.
      */
-    public void setCurrentClassificationRootId(String newRootId) throws ClientException {
+    public void setCurrentClassificationRootId(String newRootId) {
         if (newRootId != null) {
             DocumentModelList roots = getClassificationRoots();
             for (DocumentModel root : roots) {
@@ -285,11 +285,11 @@ public class ClassificationActionsBean implements ClassificationActions {
         }
     }
 
-    public String navigateToCurrentClassificationRoot() throws ClientException {
+    public String navigateToCurrentClassificationRoot() {
         return navigationContext.navigateToDocument(currentClassificationRoot);
     }
 
-    public DocumentModel getCurrentClassificationRoot() throws ClientException {
+    public DocumentModel getCurrentClassificationRoot() {
         DocumentModelList roots = getClassificationRoots();
         // reset root if needed
         if (!roots.contains(currentClassificationRoot)) {
@@ -306,7 +306,7 @@ public class ClassificationActionsBean implements ClassificationActions {
     }
 
     @Factory(value = "currentEditableClassificationRootId", scope = EVENT)
-    public String getCurrentEditableClassificationRootId() throws ClientException {
+    public String getCurrentEditableClassificationRootId() {
         DocumentModel root = getCurrentEditableClassificationRoot();
         if (root != null) {
             return root.getId();
@@ -314,7 +314,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         return null;
     }
 
-    public void setCurrentEditableClassificationRootId(String newRootId) throws ClientException {
+    public void setCurrentEditableClassificationRootId(String newRootId) {
         if (newRootId != null) {
             DocumentModelList roots = getEditableClassificationRoots();
             for (DocumentModel root : roots) {
@@ -329,7 +329,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         }
     }
 
-    public DocumentModel getCurrentEditableClassificationRoot() throws ClientException {
+    public DocumentModel getCurrentEditableClassificationRoot() {
         if (currentEditableClassificationRoot == null) {
             // initialize roots and take first
             DocumentModelList roots = getEditableClassificationRoots();
@@ -341,7 +341,7 @@ public class ClassificationActionsBean implements ClassificationActions {
     }
 
     @Factory(value = "currentClassificationTree", scope = EVENT)
-    public DocumentTreeNode getCurrentClassificationTree() throws ClientException {
+    public DocumentTreeNode getCurrentClassificationTree() {
         if (currentClassificationTree == null) {
             // initialize current root
             DocumentModel root = getCurrentClassificationRoot();
@@ -363,7 +363,7 @@ public class ClassificationActionsBean implements ClassificationActions {
     }
 
     @Factory(value = "currentEditableClassificationTree", scope = EVENT)
-    public DocumentTreeNode getCurrentEditableClassificationTree() throws ClientException {
+    public DocumentTreeNode getCurrentEditableClassificationTree() {
         if (currentEditableClassificationTree == null) {
             // initialize current root
             DocumentModel root = getCurrentEditableClassificationRoot();
@@ -384,7 +384,7 @@ public class ClassificationActionsBean implements ClassificationActions {
     }
 
     @Factory(value = "classificationRoots", scope = EVENT)
-    public DocumentModelList getClassificationRoots() throws ClientException {
+    public DocumentModelList getClassificationRoots() {
         if (classificationRoots == null) {
             classificationRoots = new DocumentModelListImpl();
             try {
@@ -405,7 +405,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         return classificationRoots;
     }
 
-    protected PageProvider<DocumentModel> getPageProvider(String pageProviderName) throws ClientException {
+    protected PageProvider<DocumentModel> getPageProvider(String pageProviderName) {
         PageProviderService pps = Framework.getLocalService(PageProviderService.class);
         Map<String, Serializable> props = new HashMap<String, Serializable>();
         props.put(CORE_SESSION_PROPERTY, (Serializable) documentManager);
@@ -413,7 +413,7 @@ public class ClassificationActionsBean implements ClassificationActions {
     }
 
     @Factory(value = "editableClassificationRoots", scope = EVENT)
-    public DocumentModelList getEditableClassificationRoots() throws ClientException {
+    public DocumentModelList getEditableClassificationRoots() {
         if (editableClassificationRoots == null) {
             editableClassificationRoots = new DocumentModelListImpl();
             for (DocumentModel classificationRoot : getClassificationRoots()) {
@@ -431,7 +431,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         return editableClassificationRoots;
     }
 
-    public void editableClassificationRootSelected(ValueChangeEvent event) throws ClientException {
+    public void editableClassificationRootSelected(ValueChangeEvent event) {
         Object newValue = event.getNewValue();
         if (newValue instanceof String) {
             String newRootId = (String) newValue;
@@ -463,7 +463,7 @@ public class ClassificationActionsBean implements ClassificationActions {
     }
 
     @Factory(value = "currentDocumentClassifications", scope = EVENT)
-    public DocumentModelList getCurrentDocumentClassifications() throws ClientException {
+    public DocumentModelList getCurrentDocumentClassifications() {
         if (currentDocumentClassifications == null) {
             DocumentModel currentDocument = navigationContext.getCurrentDocument();
             Classification adapter = currentDocument.getAdapter(Classification.class);
@@ -478,7 +478,7 @@ public class ClassificationActionsBean implements ClassificationActions {
      *
      * @param currentViewId the current view id, so that redirection can be done correctly on cancel.
      */
-    public String showCurrentSelectionClassificationForm(String currentViewId) throws ClientException {
+    public String showCurrentSelectionClassificationForm(String currentViewId) {
         currentSelectionViewId = currentViewId;
 
         ContentView contentView = contentViewActions.getContentView("MASS_CLASSIFICATION_REQUEST");
@@ -494,7 +494,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         return CURRENT_SELECTION_FOR_CLASSIFICATION_PAGE;
     }
 
-    public String cancelCurrentSelectionClassificationForm() throws ClientException {
+    public String cancelCurrentSelectionClassificationForm() {
         // XXX AT: this is a hack to redirect to correct page
         if ("/search/search_results_simple.xhtml".equals(currentSelectionViewId)) {
             return "search_results_simple";
@@ -521,7 +521,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         return !documentsListsManager.isWorkingListEmpty(CURRENT_SELECTION_FOR_UNCLASSIFICATION);
     }
 
-    public void unclassify() throws ClientException {
+    public void unclassify() {
         if (!documentsListsManager.isWorkingListEmpty(CURRENT_DOCUMENT_CLASSIFICATIONS_SELECTION)) {
             List<DocumentModel> toDel = documentsListsManager.getWorkingList(CURRENT_DOCUMENT_CLASSIFICATIONS_SELECTION);
             List<String> targetDocIds = new ArrayList<String>();
@@ -536,7 +536,7 @@ public class ClassificationActionsBean implements ClassificationActions {
         }
     }
 
-    public void unclassifyCurrentDocument() throws ClientException {
+    public void unclassifyCurrentDocument() {
         if (!documentsListsManager.isWorkingListEmpty(CURRENT_SELECTION_FOR_UNCLASSIFICATION)) {
             List<DocumentModel> toDel = documentsListsManager.getWorkingList(CURRENT_SELECTION_FOR_UNCLASSIFICATION);
             ClassificationResult<ClassificationService.UNCLASSIFY_STATE> classificationResult = Framework.getLocalService(
@@ -568,7 +568,7 @@ public class ClassificationActionsBean implements ClassificationActions {
      * @return true on error
      */
     public boolean unclassify(Collection<String> targetDocIds, DocumentModel classificationFolder)
-            throws ClientException {
+            {
         if (targetDocIds.isEmpty()) {
             facesMessages.add(ERROR, messages.get("feedback.unclassification.noDocumentsToUnclassify"));
             return true;

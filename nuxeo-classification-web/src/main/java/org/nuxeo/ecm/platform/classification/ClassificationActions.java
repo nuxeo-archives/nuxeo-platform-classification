@@ -52,7 +52,7 @@ public interface ClassificationActions extends Serializable {
 
     String TREE_PLUGIN_NAME = "classification";
 
-    boolean getCanClassifyFromCurrentSelection() throws ClientException;
+    boolean getCanClassifyFromCurrentSelection();
 
     /**
      * Returns target documents when classifying an envelope.
@@ -60,81 +60,81 @@ public interface ClassificationActions extends Serializable {
      * May take into account only current email, or all emails in current envelope.
      * </p>
      */
-    Collection<DocumentModel> getTargetDocuments() throws ClientException;
+    Collection<DocumentModel> getTargetDocuments();
 
     /**
      * Returns selected target documents from a list of email documents.
      */
-    Collection<DocumentModel> getMassTargetDocuments() throws ClientException;
+    Collection<DocumentModel> getMassTargetDocuments();
 
     /**
      * Classifies current email or envelope in given folder and redirect to current page.
      */
-    String classify(ClassificationTreeNode node) throws ClientException;
+    String classify(ClassificationTreeNode node);
 
     /**
      * Classifies a list of emails in given folder and redirect to current page.
      */
-    String massClassify(ClassificationTreeNode node) throws ClientException;
+    String massClassify(ClassificationTreeNode node);
 
     /**
      * Classifies given documents in given classification folder.
      *
      * @return true on error
      */
-    boolean classify(Collection<DocumentModel> targetDocs, DocumentModel classificationFolder) throws ClientException;
+    boolean classify(Collection<DocumentModel> targetDocs, DocumentModel classificationFolder);
 
-    String cancelClassification() throws ClientException;
+    String cancelClassification();
 
-    String getCurrentClassificationRootId() throws ClientException;
+    String getCurrentClassificationRootId();
 
     /**
      * Sets current classification root id, and set it as current document.
      */
-    void setCurrentClassificationRootId(String newRootId) throws ClientException;
+    void setCurrentClassificationRootId(String newRootId);
 
-    String navigateToCurrentClassificationRoot() throws ClientException;
+    String navigateToCurrentClassificationRoot();
 
-    DocumentModel getCurrentClassificationRoot() throws ClientException;
+    DocumentModel getCurrentClassificationRoot();
 
-    String getCurrentEditableClassificationRootId() throws ClientException;
+    String getCurrentEditableClassificationRootId();
 
-    void setCurrentEditableClassificationRootId(String newRootId) throws ClientException;
+    void setCurrentEditableClassificationRootId(String newRootId);
 
-    DocumentModel getCurrentEditableClassificationRoot() throws ClientException;
+    DocumentModel getCurrentEditableClassificationRoot();
 
-    DocumentTreeNode getCurrentClassificationTree() throws ClientException;
+    DocumentTreeNode getCurrentClassificationTree();
 
-    DocumentTreeNode getCurrentEditableClassificationTree() throws ClientException;
+    DocumentTreeNode getCurrentEditableClassificationTree();
 
-    DocumentModelList getClassificationRoots() throws ClientException;
+    DocumentModelList getClassificationRoots();
 
-    DocumentModelList getEditableClassificationRoots() throws ClientException;
+    DocumentModelList getEditableClassificationRoots();
 
-    void editableClassificationRootSelected(ValueChangeEvent event) throws ClientException;
+    void editableClassificationRootSelected(ValueChangeEvent event);
 
     void resetClassificationData();
 
     void resetCurrentDocumentClassifications();
 
-    DocumentModelList getCurrentDocumentClassifications() throws ClientException;
+    DocumentModelList getCurrentDocumentClassifications();
 
     /**
      * Returns classification form for selected documents
      *
      * @param currentViewId the current view id, so that redirection can be done correctly on cancel.
      */
-    String showCurrentSelectionClassificationForm(String currentViewId) throws ClientException;
+    String showCurrentSelectionClassificationForm(String currentViewId);
 
-    String cancelCurrentSelectionClassificationForm() throws ClientException;
+    String cancelCurrentSelectionClassificationForm();
 
-    void unclassify() throws ClientException;
+    void unclassify();
 
     /**
      * Unclassifies given document ids in given classification folder.
      *
      * @return true on error
      */
-    boolean unclassify(Collection<String> targetDocIds, DocumentModel classificationFolder) throws ClientException;
+    boolean unclassify(Collection<String> targetDocIds, DocumentModel classificationFolder);
 
 }

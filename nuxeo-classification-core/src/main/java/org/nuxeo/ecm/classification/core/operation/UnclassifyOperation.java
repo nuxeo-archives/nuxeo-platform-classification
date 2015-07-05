@@ -43,7 +43,7 @@ public class UnclassifyOperation {
     protected DocumentModel folder;
 
     @OperationMethod(collector = DocumentModelCollector.class)
-    public DocumentModel run(DocumentModel doc) throws ClientException {
+    public DocumentModel run(DocumentModel doc) {
         ClassificationService classificationService = Framework.getLocalService(ClassificationService.class);
         classificationService.unClassify(folder, Arrays.asList(doc.getId()));
 
