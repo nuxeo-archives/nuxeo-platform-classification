@@ -19,9 +19,23 @@
 
 package org.nuxeo.ecm.classification.core;
 
+import static org.nuxeo.ecm.classification.api.ClassificationConstants.CLASSIFY;
+import static org.nuxeo.ecm.classification.api.ClassificationConstants.EVENT_CLASSIFICATION_DONE;
+import static org.nuxeo.ecm.classification.api.ClassificationService.CLASSIFY_STATE.ALREADY_CLASSIFIED;
+import static org.nuxeo.ecm.classification.api.ClassificationService.CLASSIFY_STATE.CLASSIFIED;
+import static org.nuxeo.ecm.classification.api.ClassificationService.CLASSIFY_STATE.INVALID;
+import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.NOT_CLASSIFIED;
+import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.NOT_ENOUGH_RIGHTS;
+import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.UNCLASSIFIED;
+
 import java.io.Serializable;
 import java.security.Principal;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,7 +44,12 @@ import org.nuxeo.ecm.classification.api.ClassificationResolver;
 import org.nuxeo.ecm.classification.api.ClassificationResult;
 import org.nuxeo.ecm.classification.api.ClassificationService;
 import org.nuxeo.ecm.classification.api.adapter.Classification;
-import org.nuxeo.ecm.core.api.*;
+import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentSecurityException;
+import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.ecm.core.api.NuxeoException;
+import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
 import org.nuxeo.ecm.core.api.event.CoreEventConstants;
 import org.nuxeo.ecm.core.api.event.DocumentEventCategories;
 import org.nuxeo.ecm.core.api.impl.UserPrincipal;
@@ -43,13 +62,6 @@ import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.model.ComponentContext;
 import org.nuxeo.runtime.model.ComponentInstance;
 import org.nuxeo.runtime.model.DefaultComponent;
-
-import static org.nuxeo.ecm.classification.api.ClassificationConstants.CLASSIFY;
-import static org.nuxeo.ecm.classification.api.ClassificationConstants.EVENT_CLASSIFICATION_DONE;
-import static org.nuxeo.ecm.classification.api.ClassificationService.CLASSIFY_STATE.*;
-import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.NOT_CLASSIFIED;
-import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.NOT_ENOUGH_RIGHTS;
-import static org.nuxeo.ecm.classification.api.ClassificationService.UNCLASSIFY_STATE.UNCLASSIFIED;
 
 public class ClassificationServiceImpl extends DefaultComponent implements ClassificationService {
     public static final String NAME = "org.nuxeo.ecm.classification.core.ClassificationService";
@@ -162,7 +174,7 @@ public class ClassificationServiceImpl extends DefaultComponent implements Class
         ClassificationResult<CLASSIFY_STATE> result = new ClassificationResult<CLASSIFY_STATE>();
         CoreSession session = classificationFolder.getCoreSession();
         if (session == null) {
-            throw new ClientException("Unable to get session from classification folder");
+            throw new NuxeoException("Unable to get session from classification folder");
         }
 
         if (!session.hasPermission(classificationFolder.getRef(), CLASSIFY)) {
@@ -205,7 +217,7 @@ public class ClassificationServiceImpl extends DefaultComponent implements Class
         ClassificationResult<UNCLASSIFY_STATE> result = new ClassificationResult<UNCLASSIFY_STATE>();
         CoreSession session = classificationFolder.getCoreSession();
         if (session == null) {
-            throw new ClientException("Unable to get session from classification folder");
+            throw new NuxeoException("Unable to get session from classification folder");
         }
 
         if (!session.hasPermission(classificationFolder.getRef(), CLASSIFY)) {
@@ -245,7 +257,7 @@ public class ClassificationServiceImpl extends DefaultComponent implements Class
             String targetId) {
         ClassificationResult<UNCLASSIFY_STATE> result = new ClassificationResult<UNCLASSIFY_STATE>();
         if (classificationFolders == null || classificationFolders.isEmpty()) {
-            throw new ClientException("Empty classification folders list");
+            throw new NuxeoException("Empty classification folders list");
         }
 
         CoreSession session = ((DocumentModel) classificationFolders.toArray()[0]).getCoreSession();
@@ -292,13 +304,7 @@ public class ClassificationServiceImpl extends DefaultComponent implements Class
 
         // Document life cycle
         if (source != null) {
-            String currentLifeCycleState = null;
-            try {
-                currentLifeCycleState = source.getCurrentLifeCycleState();
-            } catch (ClientException err) {
-                // FIXME no lifecycle -- this shouldn't generated an
-                // exception (and ClientException logs the spurious error)
-            }
+            String currentLifeCycleState = source.getCurrentLifeCycleState();
             options.put(CoreEventConstants.DOC_LIFE_CYCLE, currentLifeCycleState);
         }
         // Add the session ID

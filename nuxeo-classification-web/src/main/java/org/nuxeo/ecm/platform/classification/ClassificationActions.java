@@ -22,7 +22,6 @@ import java.util.Collection;
 
 import javax.faces.event.ValueChangeEvent;
 
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.webapp.tree.DocumentTreeNode;

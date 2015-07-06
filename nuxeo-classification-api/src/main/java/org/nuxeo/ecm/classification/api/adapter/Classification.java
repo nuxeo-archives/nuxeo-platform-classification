@@ -19,7 +19,12 @@ package org.nuxeo.ecm.classification.api.adapter;
 
 import org.apache.commons.lang.StringUtils;
 import org.nuxeo.ecm.classification.api.ClassificationService;
-import org.nuxeo.ecm.core.api.*;
+import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.DocumentRef;
+import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
 import org.nuxeo.runtime.api.Framework;
 
@@ -35,7 +40,7 @@ import static org.nuxeo.ecm.core.api.security.SecurityConstants.READ;
 
 /**
  * Classification Adapter
- * 
+ *
  * @since 5.7
  * @author akervern
  */
@@ -50,8 +55,6 @@ public class Classification {
      * Returns resolved classified documents using given session.
      * <p>
      * Classified documents are kept on a specific property in the container.
-     * 
-     * @throws org.nuxeo.ecm.core.api.ClientException
      */
     public DocumentModelList getClassifiedDocuments() {
         DocumentModelList targets = new DocumentModelListImpl();
@@ -195,7 +198,7 @@ public class Classification {
     protected CoreSession getCoreSession() {
         CoreSession session = document.getCoreSession();
         if (session == null) {
-            throw new ClientException("Trying to resolve classified document with an offline document");
+            throw new NuxeoException("Trying to resolve classified document with an offline document");
         }
         return session;
     }

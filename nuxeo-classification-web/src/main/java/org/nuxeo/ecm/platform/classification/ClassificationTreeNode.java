@@ -25,7 +25,6 @@ import java.util.LinkedHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.classification.api.adapter.Classification;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
@@ -52,39 +51,35 @@ public class ClassificationTreeNode extends DocumentTreeNodeImpl {
 
     @Override
     public void fetchChildren() {
-        try {
-            // fetch usual children (sub folders and saved searches)
-            children = new LinkedHashMap<Object, DocumentTreeNodeImpl>();
-            CoreSession session = getCoreSession();
-            if (session == null) {
-                log.error("Cannot retrieve CoreSession for " + document);
-                return;
-            }
+        // fetch usual children (sub folders and saved searches)
+        children = new LinkedHashMap<Object, DocumentTreeNodeImpl>();
+        CoreSession session = getCoreSession();
+        if (session == null) {
+            log.error("Cannot retrieve CoreSession for " + document);
+            return;
+        }
 
-            // get and filter
-            DocumentModelList coreChildren = session.getChildren(document.getRef(), null, SecurityConstants.READ,
-                    filter, sorter);
-            for (DocumentModel child : coreChildren) {
-                String identifier = child.getId();
-                children.put(identifier, new ClassificationTreeNode(child, filter, sorter));
-            }
+        // get and filter
+        DocumentModelList coreChildren = session.getChildren(document.getRef(), null, SecurityConstants.READ, filter,
+                sorter);
+        for (DocumentModel child : coreChildren) {
+            String identifier = child.getId();
+            children.put(identifier, new ClassificationTreeNode(child, filter, sorter));
+        }
 
-            // addResolver classified files as children, respecting PLE-252 (folders
-            // first) as classified files are never folderish
-            Classification adapter = document.getAdapter(Classification.class);
-            DocumentModelList classifChildren = new DocumentModelListImpl();
-            if (adapter != null) {
-                classifChildren = adapter.getClassifiedDocuments();
-            }
+        // addResolver classified files as children, respecting PLE-252 (folders
+        // first) as classified files are never folderish
+        Classification adapter = document.getAdapter(Classification.class);
+        DocumentModelList classifChildren = new DocumentModelListImpl();
+        if (adapter != null) {
+            classifChildren = adapter.getClassifiedDocuments();
+        }
 
-            // sort according to original sorter
-            Collections.sort(classifChildren, sorter);
-            for (DocumentModel child : classifChildren) {
-                String identifier = child.getId();
-                children.put(identifier, new ClassificationTreeNode(child, filter, sorter));
-            }
-        } catch (ClientException e) {
-            log.error(e);
+        // sort according to original sorter
+        Collections.sort(classifChildren, sorter);
+        for (DocumentModel child : classifChildren) {
+            String identifier = child.getId();
+            children.put(identifier, new ClassificationTreeNode(child, filter, sorter));
         }
     }
 

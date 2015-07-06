@@ -52,7 +52,6 @@ import org.nuxeo.ecm.classification.api.ClassificationConstants;
 import org.nuxeo.ecm.classification.api.ClassificationResult;
 import org.nuxeo.ecm.classification.api.ClassificationService;
 import org.nuxeo.ecm.classification.api.adapter.Classification;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
@@ -129,12 +128,7 @@ public class ClassificationActionsBean implements ClassificationActions {
     protected String currentSelectionViewId;
 
     protected List<DocumentModel> getFilteredSelectedDocumentsForClassification() {
-        ClassificationService clService;
-        try {
-            clService = Framework.getService(ClassificationService.class);
-        } catch (Exception e) {
-            throw new ClientException("Could not find Classification Service", e);
-        }
+        ClassificationService clService = Framework.getService(ClassificationService.class);
         List<DocumentModel> filtered = new DocumentModelListImpl();
         List<DocumentModel> docs = documentsListsManager.getWorkingList(DocumentsListsManager.CURRENT_DOCUMENT_SELECTION);
         if (docs != null) {
@@ -387,19 +381,14 @@ public class ClassificationActionsBean implements ClassificationActions {
     public DocumentModelList getClassificationRoots() {
         if (classificationRoots == null) {
             classificationRoots = new DocumentModelListImpl();
-            try {
-                PageProvider<DocumentModel> provider = getPageProvider(CLASSIFICATION_ROOTS_PROVIDER_NAME);
-                List<DocumentModel> resultDocuments = provider.getCurrentPage();
-                for (DocumentModel doc : resultDocuments) {
-                    // XXX refetch it to be a real document model instead of a
-                    // ResultDocumentModel that does not handle lists correctly
-                    // (dc:contributors is Object[] instead of String[]) + get
-                    // a session id that's needed to retrieve a tree node
-                    // children
-                    classificationRoots.add(documentManager.getDocument(doc.getRef()));
-                }
-            } catch (ClientException e) {
-                log.error(e);
+            PageProvider<DocumentModel> provider = getPageProvider(CLASSIFICATION_ROOTS_PROVIDER_NAME);
+            List<DocumentModel> resultDocuments = provider.getCurrentPage();
+            for (DocumentModel doc : resultDocuments) {
+                // XXX refetch it to be a real document model instead of a
+                // ResultDocumentModel that does not handle lists correctly
+                // (dc:contributors is Object[] instead of String[]) + get
+                // a session id that's needed to retrieve a tree node children
+                classificationRoots.add(documentManager.getDocument(doc.getRef()));
             }
         }
         return classificationRoots;
