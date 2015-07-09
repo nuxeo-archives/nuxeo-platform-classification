@@ -3,8 +3,8 @@ package org.nuxeo.ecm.platform.classification;
 import org.nuxeo.ecm.classification.api.adapter.Classification;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentNotFoundException;
 import org.nuxeo.ecm.core.api.IdRef;
-import org.nuxeo.ecm.core.model.NoSuchDocumentException;
 import org.nuxeo.ecm.platform.query.api.AbstractPageProvider;
 
 import java.io.Serializable;
@@ -36,7 +36,7 @@ public class ClassifiedPageProvider extends AbstractPageProvider<DocumentModel> 
         String docId = (String) getProperties().get("docId");
         try {
             return coreSession.getDocument(new IdRef(docId));
-        } catch (NoSuchDocumentException e) {
+        } catch (DocumentNotFoundException e) {
             return null;
         }
     }
