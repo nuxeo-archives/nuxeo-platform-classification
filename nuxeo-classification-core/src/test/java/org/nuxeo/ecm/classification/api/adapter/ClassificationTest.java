@@ -19,7 +19,7 @@ import org.nuxeo.ecm.classification.api.ClassificationService;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentRef;
-import org.nuxeo.ecm.core.storage.sql.DatabaseHelper;
+import org.nuxeo.ecm.core.test.CoreFeature;
 import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
 import org.nuxeo.ecm.platform.test.PlatformFeature;
@@ -40,6 +40,9 @@ public class ClassificationTest {
 
     @Inject
     CoreSession session;
+
+    @Inject
+    CoreFeature coreFeature;
 
     DocumentModel root;
 
@@ -123,13 +126,13 @@ public class ClassificationTest {
         child1.setPropertyValue("dc:description", "title");
         child1 = session.saveDocument(child1);
 
-        DatabaseHelper.DATABASE.maybeSleepToNextSecond();
+        coreFeature.getStorageConfiguration().maybeSleepToNextSecond();
 
         child1.checkIn(MAJOR, null);
         child1.setPropertyValue("dc:description", "title2");
         child1 = session.saveDocument(child1);
 
-        DatabaseHelper.DATABASE.maybeSleepToNextSecond();
+        coreFeature.getStorageConfiguration().maybeSleepToNextSecond();
 
         DocumentRef lastVersion = child1.checkIn(MAJOR, null);
 
